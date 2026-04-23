@@ -41,7 +41,11 @@ body {
   font-style: italic;
 }
 
+/* Base: Regular (400). Project titles use font-semibold (SF Pro Display Semibold in Figma). */
 .font-system {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
     "SF Pro Text", system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-synthesis: none;
 }

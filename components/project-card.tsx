@@ -15,13 +15,13 @@ function ProjectIcon({ project }: { project: Project }) {
 
   if (project.iconSelfContained) {
     return (
-      <div className={`${size} rounded-full overflow-hidden`}>
+      <div className={`${size} overflow-hidden rounded-full`}>
         <Image
           src={project.iconSrc}
           alt={`${project.name} logo`}
           width={42}
           height={42}
-          className="w-full h-full"
+          className="h-full w-full"
         />
       </div>
     );
@@ -30,7 +30,7 @@ function ProjectIcon({ project }: { project: Project }) {
   if (project.iconClip) {
     return (
       <div
-        className={`${size} rounded-full overflow-hidden flex items-center justify-center`}
+        className={`${size} flex items-center justify-center overflow-hidden rounded-full`}
         style={{ backgroundColor: project.iconBg }}
       >
         <div className={`${glyphSize} relative overflow-hidden`}>
@@ -39,7 +39,7 @@ function ProjectIcon({ project }: { project: Project }) {
             alt={`${project.name} logo`}
             width={103}
             height={27}
-            className="absolute top-0 left-0 max-w-none"
+            className="absolute left-0 top-0 max-w-none"
             style={{
               width: project.iconClip.width,
               height: "105.21%",
@@ -53,7 +53,7 @@ function ProjectIcon({ project }: { project: Project }) {
   if (project.name === "Delphi") {
     return (
       <div
-        className={`${size} rounded-full flex items-center justify-center overflow-hidden`}
+        className={`${size} flex items-center justify-center overflow-hidden rounded-full`}
         style={{ backgroundColor: project.iconBg }}
       >
         <div className={glyphSize}>
@@ -62,7 +62,7 @@ function ProjectIcon({ project }: { project: Project }) {
             alt={`${project.name} logo`}
             width={25}
             height={25}
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
           />
         </div>
       </div>
@@ -71,7 +71,7 @@ function ProjectIcon({ project }: { project: Project }) {
 
   return (
     <div
-      className={`${size} rounded-full flex items-center justify-center overflow-hidden`}
+      className={`${size} flex items-center justify-center overflow-hidden rounded-full`}
       style={{ backgroundColor: project.iconBg }}
     >
       <Image
@@ -79,13 +79,24 @@ function ProjectIcon({ project }: { project: Project }) {
         alt={`${project.name} logo`}
         width={27}
         height={19}
-        className="w-[19.5px] h-[13.7px] md:w-[60%] md:h-auto object-contain"
+        className="h-[13.7px] w-[19.5px] object-contain md:h-auto md:w-[60%]"
       />
     </div>
   );
 }
 
+/* Card layout + type: Figma 129:8306 — column gap-16, p-18, rounded-24; company Semibold; body/handle/footer Regular 16px; media aspect 510/213 | 510/201 */
+const mediaAspectClass: Record<NonNullable<Project["mediaAspect"]>, string> = {
+  tall: "aspect-[510/213]",
+  short: "aspect-[510/201]",
+};
+
 export function ProjectCard({ project, index }: ProjectCardProps) {
+  const aspect =
+    project.mediaAspect != null
+      ? mediaAspectClass[project.mediaAspect]
+      : "aspect-[510/201]";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -96,57 +107,62 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         delay: index * 0.08,
         ease: [0.25, 0.1, 0.25, 1],
       }}
-      className="
-        relative overflow-hidden
+      className={`
+        relative flex w-full max-w-[333px] flex-col gap-4
+        md:max-w-[546px]
         font-system
-        w-full max-w-[333px] md:max-w-[546px]
-        backdrop-blur-[1.22px] md:backdrop-blur-[2px] bg-[rgba(58,58,58,0.36)]
+        overflow-hidden
+        bg-[rgba(58,58,58,0.36)]
+        backdrop-blur-[1.22px] md:backdrop-blur-[1.22px]
+        rounded-[18px] md:rounded-[24px]
+        p-[18px] md:p-[18px]
         border border-[rgba(255,255,255,0.04)]
         shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_10px_30px_rgba(0,0,0,0.34)]
-        rounded-[18px]
-        p-[19.5px] md:p-4
-        flex flex-col gap-[12.2px] md:gap-3
-      "
+        md:border-0 md:shadow-[4px_4px_4px_0px_rgba(0,0,0,0.1)]
+      `}
     >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-b from-[rgba(255,255,255,0.04)] via-[rgba(255,255,255,0.015)] to-[rgba(255,255,255,0)]"
       />
 
-      {/* Header */}
-      <div className="relative z-10 flex items-center">
-        <div className="flex items-start gap-[4.9px] md:gap-[8px]">
-          <div className="flex h-[31.7px] w-[30px] items-center py-[1.2px] pr-[1.2px] md:h-auto md:w-auto md:py-[2px] md:pr-[2px]">
+      {/* Headline — Figma 129:8307: 46px row, Content Badge Case 44×46, 42px icon, gap-8, Company 42h gap-2 pt-2, nowrap; md+ matches 546 card */}
+      <div className="relative z-10 flex w-full min-h-10 items-center md:min-h-[46px]">
+        <div className="flex w-full min-h-0 shrink-0 items-start gap-2">
+          <div className="box-border flex h-10 w-10 shrink-0 items-center justify-center py-0.5 pr-0.5 md:h-[46px] md:w-[44px]">
             <ProjectIcon project={project} />
           </div>
-          <div className="flex flex-col gap-[1.22px] md:gap-[2px] pt-[1.22px] md:pt-[2px]">
-            <span className="text-white text-[12.2px] md:text-[15px] font-bold leading-[13.42px] md:leading-[18px]">
+          {/* Company — Figma 129:8220: 16/19 line-height, gap-2, pt-2; mobile scales ~12.2/14.5 */}
+          <div className="flex min-w-0 flex-col items-start gap-0.5 pt-0.5 not-italic text-white md:h-[42px] md:pt-0.5 md:text-base">
+            <p className="m-0 min-w-0 text-[12.2px] font-semibold leading-[14.5px] md:whitespace-nowrap md:text-base md:leading-[19px]">
               {project.name}
-            </span>
-            <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-[12.2px] md:leading-normal">
+            </p>
+            <p className="m-0 min-w-0 text-[12.2px] font-normal leading-[14.5px] md:whitespace-nowrap md:text-base md:leading-[19px]">
               {project.handle}
-            </span>
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="relative z-10 flex flex-col gap-[9.76px] md:gap-3 flex-1">
-        <p className="text-white text-[14.64px] md:text-[17px] font-normal leading-[18.3px] md:leading-[1.18]">
+      {/* Body copy — Figma 129:8224: Regular 16px; 510×95 ⇒ 5 lines @ 19px line-height (19/16) */}
+      <div className="relative z-10 flex w-full min-w-0 flex-1 flex-col gap-4">
+        <p className="w-full not-italic text-[14.64px] font-normal leading-[17.4px] text-white md:text-base md:leading-[19px]">
           {project.description}
         </p>
-        <div className="w-full h-[173.6px] md:h-auto md:aspect-[514/285] rounded-[7.32px] md:rounded-[12px] bg-gradient-to-b from-[#e5e5e5] to-[#999]" />
+        <div
+          className={`w-full shrink-0 rounded-[7.32px] bg-gradient-to-b from-[#4f4f4f] to-[#141414] md:rounded-[7.319px] ${aspect}`}
+        />
       </div>
 
-      {/* Footer */}
-      <div className="relative z-10 flex items-center gap-[4.88px] md:gap-2 pl-[2.9px] md:pl-[5px]">
-        <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-normal">
-          09:41 AM
+      {/* Footer — Figma 129:8230: gap-4, pl-2 */}
+      <div className="relative z-10 flex min-h-[19px] w-full items-center gap-1 pl-0.5 text-[12.2px] leading-normal text-white md:text-base">
+        <span className="text-[12.2px] font-normal text-white leading-normal md:text-base">
+          {project.time}
         </span>
-        <span className="text-white text-[9.15px] md:text-[15px] font-normal leading-normal">
+        <span className="text-[9.15px] font-normal text-white leading-normal md:text-base">
           •
         </span>
-        <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-normal">
+        <span className="text-[12.2px] font-normal text-white leading-normal md:text-base">
           {project.date}
         </span>
       </div>
