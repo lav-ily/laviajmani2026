@@ -10,8 +10,8 @@ interface ProjectCardProps {
 }
 
 function ProjectIcon({ project }: { project: Project }) {
-  const size = "w-[21px] h-[21px] md:w-[42px] md:h-[42px]";
-  const glyphSize = "w-[12.5px] h-[12.5px] md:w-[25px] md:h-[25px]";
+  const size = "w-[29.3px] h-[29.3px] md:w-[42px] md:h-[42px]";
+  const glyphSize = "w-[19.5px] h-[19.5px] md:w-[25px] md:h-[25px]";
 
   if (project.iconSelfContained) {
     return (
@@ -99,13 +99,13 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       className="
         relative overflow-hidden
         font-system
-        w-full max-w-[273px] md:max-w-[546px]
-        backdrop-blur-[2px] bg-[rgba(44,44,44,0.34)]
+        w-full max-w-[333px] md:max-w-[546px]
+        backdrop-blur-[1.22px] md:backdrop-blur-[2px] bg-[rgba(58,58,58,0.36)]
         border border-[rgba(255,255,255,0.04)]
         shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_10px_30px_rgba(0,0,0,0.34)]
-        rounded-[13px] md:rounded-[26px]
-        px-[8px] py-[8px] md:p-4
-        flex flex-col gap-1.5 md:gap-3
+        rounded-[22px] md:rounded-[26px]
+        p-[19.5px] md:p-4
+        flex flex-col gap-[12.2px] md:gap-3
       "
     >
       <div
@@ -115,15 +115,15 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
 
       {/* Header */}
       <div className="relative z-10 flex items-center">
-        <div className="flex items-start gap-[4px] md:gap-[8px]">
+        <div className="flex items-start gap-[4.9px] md:gap-[8px]">
           <div className="flex items-center py-[1px] md:py-[2px] pr-[1px] md:pr-[2px]">
             <ProjectIcon project={project} />
           </div>
-          <div className="flex flex-col gap-0 md:gap-[2px] pt-0 md:pt-[2px]">
-            <span className="text-white text-[9px] md:text-[15px] font-bold leading-[9px] md:leading-[18px]">
+          <div className="flex flex-col gap-[1.22px] md:gap-[2px] pt-[1.22px] md:pt-[2px]">
+            <span className="text-white text-[12.2px] md:text-[15px] font-bold leading-[13.42px] md:leading-[18px]">
               {project.name}
             </span>
-            <span className="text-white text-[9px] md:text-[15px] font-normal leading-[9px] md:leading-[18px]">
+            <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-normal">
               {project.handle}
             </span>
           </div>
@@ -131,22 +131,22 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
 
       {/* Body */}
-      <div className="relative z-10 flex flex-col gap-1.5 md:gap-3 flex-1">
-        <p className="text-white text-[8.5px] md:text-[17px] font-normal leading-[1.18]">
+      <div className="relative z-10 flex flex-col gap-[9.76px] md:gap-3 flex-1">
+        <p className="text-white text-[14.64px] md:text-[17px] font-normal leading-[18.3px] md:leading-[1.18]">
           {project.description}
         </p>
-        <div className="w-full aspect-[514/285] rounded-[6px] md:rounded-[12px] bg-gradient-to-b from-[#e5e5e5] to-[#999]" />
+        <div className="w-full h-[173.6px] md:h-auto md:aspect-[514/285] rounded-[7.32px] md:rounded-[12px] bg-gradient-to-b from-[#e5e5e5] to-[#999]" />
       </div>
 
       {/* Footer */}
-      <div className="relative z-10 flex items-center gap-1 md:gap-2 pl-[2px] md:pl-[5px]">
-        <span className="text-white text-[7.5px] md:text-[15px] font-normal leading-normal">
+      <div className="relative z-10 flex items-center gap-[4.88px] md:gap-2 pl-[2.9px] md:pl-[5px]">
+        <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-normal">
           09:41 AM
         </span>
-        <span className="text-white text-[7.5px] md:text-[15px] font-normal leading-normal">
+        <span className="text-white text-[9.15px] md:text-[15px] font-normal leading-normal">
           •
         </span>
-        <span className="text-white text-[7.5px] md:text-[15px] font-normal leading-normal">
+        <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-normal">
           {project.date}
         </span>
       </div>
