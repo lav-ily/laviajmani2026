@@ -10,7 +10,7 @@ interface ProjectCardProps {
 }
 
 function ProjectIcon({ project }: { project: Project }) {
-  const size = "w-[29.3px] h-[29.3px] md:w-[42px] md:h-[42px]";
+  const size = "w-[30px] h-[30px] md:w-[42px] md:h-[42px]";
   const glyphSize = "w-[19.5px] h-[19.5px] md:w-[25px] md:h-[25px]";
 
   if (project.iconSelfContained) {
@@ -79,7 +79,7 @@ function ProjectIcon({ project }: { project: Project }) {
         alt={`${project.name} logo`}
         width={27}
         height={19}
-        className="w-[60%] h-auto object-contain"
+        className="w-[19.5px] h-[13.7px] md:w-[60%] md:h-auto object-contain"
       />
     </div>
   );
@@ -103,7 +103,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         backdrop-blur-[1.22px] md:backdrop-blur-[2px] bg-[rgba(58,58,58,0.36)]
         border border-[rgba(255,255,255,0.04)]
         shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_10px_30px_rgba(0,0,0,0.34)]
-        rounded-[22px] md:rounded-[26px]
+        rounded-[18px]
         p-[19.5px] md:p-4
         flex flex-col gap-[12.2px] md:gap-3
       "
@@ -116,14 +116,14 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       {/* Header */}
       <div className="relative z-10 flex items-center">
         <div className="flex items-start gap-[4.9px] md:gap-[8px]">
-          <div className="flex items-center py-[1px] md:py-[2px] pr-[1px] md:pr-[2px]">
+          <div className="flex h-[31.7px] w-[30px] items-center py-[1.2px] pr-[1.2px] md:h-auto md:w-auto md:py-[2px] md:pr-[2px]">
             <ProjectIcon project={project} />
           </div>
           <div className="flex flex-col gap-[1.22px] md:gap-[2px] pt-[1.22px] md:pt-[2px]">
             <span className="text-white text-[12.2px] md:text-[15px] font-bold leading-[13.42px] md:leading-[18px]">
               {project.name}
             </span>
-            <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-normal">
+            <span className="text-white text-[12.2px] md:text-[15px] font-normal leading-[12.2px] md:leading-normal">
               {project.handle}
             </span>
           </div>
