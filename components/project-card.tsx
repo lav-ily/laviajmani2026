@@ -124,9 +124,9 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         relative flex w-full max-w-[333px] flex-col gap-3
         md:max-w-[546px]
         font-system
+        [transform:translateZ(0)]
         overflow-hidden
         bg-[rgba(58,58,58,0.36)]
-        backdrop-blur-[1.22px] md:backdrop-blur-[1.22px]
         rounded-[18px] md:rounded-[24px]
         p-[18px] md:p-[18px]
         border border-[rgba(255,255,255,0.04)]
@@ -167,7 +167,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             className={`w-full shrink-0 bg-[#141414] leading-none ${MEDIA_CORNER}`}
           >
             <video
-              className={`block h-auto w-full max-w-full align-top ${MEDIA_CORNER} bg-[#141414]`}
+              className={`block h-auto w-full max-w-full align-top [transform:translateZ(0)] ${MEDIA_CORNER} bg-[#141414]`}
               style={mediaVideoCropStyle(project.mediaBottomCrop)}
               src={project.mediaVideoSrc}
               autoPlay
