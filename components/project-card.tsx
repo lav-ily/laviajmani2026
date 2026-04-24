@@ -124,7 +124,7 @@ function ReadMoreChip({
         aria-expanded={expanded}
         aria-controls={descriptionId}
         onClick={onToggle}
-        className="box-border flex h-5 min-w-[70px] w-fit max-w-full shrink-0 cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-[10px] border-0 bg-[#303030] px-2 py-0.5 text-center text-[12px] font-normal not-italic leading-[normal] text-[#8f8f8f] [font-weight:400] touch-manipulation transition-[color,background-color,opacity] hover:text-[#9a9a9a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,255,255,0.28)] active:opacity-90"
+        className="box-border flex h-[21px] min-w-[70px] w-fit max-w-full shrink-0 cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-[10px] border-0 bg-[#303030] px-2 py-0 text-center text-[12px] font-normal not-italic leading-[21px] text-[#8f8f8f] [font-weight:400] touch-manipulation transition-[color,background-color,opacity] hover:text-[#9a9a9a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,255,255,0.28)] active:opacity-90"
       >
         {expanded ? READ_LESS : READ_MORE}
       </button>
@@ -183,11 +183,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           <div className="box-border flex shrink-0 items-center py-0.5 pr-0.5 max-md:items-center max-md:justify-center md:box-border md:h-[46px] md:w-[44px] md:items-center md:justify-center">
             <ProjectIcon project={project} />
           </div>
-          <div className="flex min-w-0 flex-col items-start gap-0.5 pt-0.5 not-italic text-white max-md:gap-0.5 max-md:pt-0.5 md:h-[42px] md:pt-0.5 md:text-base">
-            <p className="m-0 min-w-0 whitespace-nowrap text-base font-semibold leading-[normal] md:leading-[19px]">
+          <div className="flex min-w-0 flex-col items-start gap-0.5 pt-0.5 not-italic text-white max-md:gap-0.5 max-md:pt-0.5 md:min-h-[44px] md:pt-0.5 md:text-base">
+            <p className="m-0 min-w-0 whitespace-nowrap text-base font-semibold leading-[21px]">
               {project.name}
             </p>
-            <p className="m-0 min-w-0 whitespace-nowrap text-base font-normal leading-[normal] md:leading-[19px]">
+            <p className="m-0 min-w-0 whitespace-nowrap text-base font-normal leading-[21px]">
               {project.handle}
             </p>
           </div>
@@ -197,7 +197,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       <div className="relative z-10 flex w-full min-w-0 flex-col max-md:gap-0.5">
         <p
           id={descriptionId}
-          className={`m-0 w-full min-w-0 break-words text-base font-normal not-italic leading-[normal] text-white md:min-w-0 md:pb-0 md:text-[17px] md:leading-5 ${
+          className={`m-0 w-full min-w-0 break-words text-base font-normal not-italic leading-[21px] text-white md:min-w-0 md:pb-0 md:text-[17px] ${
             bodyExpanded ? "max-md:overflow-visible" : "max-md:line-clamp-4"
           }`}
         >
@@ -212,40 +212,54 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
 
-      <div
-        id={mediaAnchorId}
-        className="relative z-10 w-full shrink-0 scroll-mt-24"
-        {...(project.navContrast === "light" ? { "data-nav-contrast": "light" } : {})}
-      >
-        {project.mediaVideoSrc != null && project.mediaVideoSrc !== "" ? (
-          <div className={`w-full bg-[#141414] leading-none ${MEDIA_CORNER}`}>
-            <video
-              width={project.mediaVideoSize?.width}
-              height={project.mediaVideoSize?.height}
-              className={`block h-auto w-full max-w-full align-top [transform:translateZ(0)] object-contain [object-position:center] ${MEDIA_CORNER} bg-[#141414]`}
-              style={mediaVideoCropStyle(project.mediaBottomCrop)}
-              src={project.mediaVideoSrc}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              aria-label={`${project.name} product video`}
+      {!project.hideMedia && (
+        <div
+          id={mediaAnchorId}
+          className="relative z-10 w-full shrink-0 scroll-mt-24"
+          {...(project.navContrast === "light" ? { "data-nav-contrast": "light" } : {})}
+        >
+          {project.mediaVideoSrc != null && project.mediaVideoSrc !== "" ? (
+            <div className={`w-full bg-[#141414] leading-none ${MEDIA_CORNER}`}>
+              <video
+                width={project.mediaVideoSize?.width}
+                height={project.mediaVideoSize?.height}
+                className={`block h-auto w-full max-w-full align-top [transform:translateZ(0)] object-contain [object-position:center] ${MEDIA_CORNER} bg-[#141414]`}
+                style={mediaVideoCropStyle(project.mediaBottomCrop)}
+                src={project.mediaVideoSrc}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                aria-label={`${project.name} product video`}
+              />
+            </div>
+          ) : project.mediaImageSrc != null && project.mediaImageSrc !== "" ? (
+            <div className={`w-full bg-[#141414] leading-none ${MEDIA_CORNER}`}>
+              <Image
+                src={project.mediaImageSrc}
+                alt={`${project.name} product screenshot`}
+                width={project.mediaImageSize?.width ?? 1024}
+                height={project.mediaImageSize?.height ?? 900}
+                sizes="(max-width: 768px) min(100vw - 60px, 361px), 546px"
+                className={`block h-auto w-full max-w-full align-top object-contain [object-position:center] ${MEDIA_CORNER}`}
+                priority={isFirst}
+              />
+            </div>
+          ) : (
+            <div
+              className={`w-full bg-gradient-to-b from-[#4f4f4f] to-[#141414] ${MEDIA_CORNER} ${aspect}`}
             />
-          </div>
-        ) : (
-          <div
-            className={`w-full bg-gradient-to-b from-[#4f4f4f] to-[#141414] ${MEDIA_CORNER} ${aspect}`}
-          />
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
-      <div className="relative z-10 flex w-full min-h-0 items-center gap-1 pl-0.5 text-white max-md:min-h-[19px] max-md:gap-1 max-md:pl-0.5 max-md:leading-[normal] md:mt-0 md:min-h-[19px] md:text-base">
-        <span className="shrink-0 text-base font-normal leading-[normal] max-md:whitespace-nowrap">
+      <div className="relative z-10 flex w-full min-h-0 items-center gap-1 pl-0.5 text-white max-md:min-h-[21px] max-md:gap-1 max-md:pl-0.5 max-md:leading-[21px] md:mt-0 md:min-h-[21px] md:leading-[21px] md:text-base">
+        <span className="shrink-0 text-base font-normal leading-[21px] max-md:whitespace-nowrap">
           {project.time}
         </span>
-        <span className="shrink-0 text-base font-normal leading-[normal]">•</span>
-        <span className="shrink-0 text-base font-normal leading-[normal] max-md:whitespace-nowrap">
+        <span className="shrink-0 text-base font-normal leading-[21px]">•</span>
+        <span className="shrink-0 text-base font-normal leading-[21px] max-md:whitespace-nowrap">
           {project.date}
         </span>
       </div>
