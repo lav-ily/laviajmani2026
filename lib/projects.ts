@@ -14,6 +14,10 @@ export interface Project {
   date: string;
   /** First card uses taller media aspect in Figma */
   mediaAspect?: "tall" | "short";
+  /** If set, media area shows this video (public path) instead of the placeholder gradient */
+  mediaVideoSrc?: string;
+  /** Pixels cropped from the bottom of the media (e.g. video) */
+  mediaBottomCrop?: number;
 }
 
 export const projects: Project[] = [
@@ -27,6 +31,8 @@ export const projects: Project[] = [
     time: "11:11 AM",
     date: "07 February 2025",
     mediaAspect: "tall",
+    mediaVideoSrc: "/videos/lavibullpen.mp4",
+    mediaBottomCrop: 4,
   },
   {
     name: "Delphi",

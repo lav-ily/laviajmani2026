@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import type { CSSProperties } from "react";
 import type { Project } from "@/lib/projects";
 
 interface ProjectCardProps {
@@ -85,11 +86,23 @@ function ProjectIcon({ project }: { project: Project }) {
   );
 }
 
-/* Card layout + type: Figma 129:8306 — column gap-16, p-18, rounded-24; company Semibold; body/handle/footer Regular 16px; media aspect 510/213 | 510/201 */
+/* Card layout: 12px between headline / body / media / footer; p-18; rounded-24; type per Figma; media aspect 510/213 | 510/201 */
 const mediaAspectClass: Record<NonNullable<Project["mediaAspect"]>, string> = {
   tall: "aspect-[510/213]",
   short: "aspect-[510/201]",
 };
+
+/** Figma media corner ~7.32px — shared by gradient + video for consistent corners */
+const MEDIA_CORNER = "overflow-hidden rounded-[7.32px]";
+
+function mediaVideoCropStyle(pixels: number | undefined): CSSProperties | undefined {
+  if (pixels == null || pixels <= 0) return undefined;
+  return {
+    clipPath: `inset(0 0 ${pixels}px 0)`,
+    WebkitClipPath: `inset(0 0 ${pixels}px 0)`,
+    marginBottom: -pixels,
+  };
+}
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
   const aspect =
@@ -108,7 +121,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         ease: [0.25, 0.1, 0.25, 1],
       }}
       className={`
-        relative flex w-full max-w-[333px] flex-col gap-4
+        relative flex w-full max-w-[333px] flex-col gap-3
         md:max-w-[546px]
         font-system
         overflow-hidden
@@ -145,13 +158,31 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
 
       {/* Body copy — Figma 129:8224: Regular 16px; 510×95 ⇒ 5 lines @ 19px line-height (19/16) */}
-      <div className="relative z-10 flex w-full min-w-0 flex-1 flex-col gap-4">
+      <div className="relative z-10 flex w-full min-w-0 flex-1 flex-col gap-3">
         <p className="w-full not-italic text-[14.64px] font-normal leading-[17.4px] text-white md:text-base md:leading-[19px]">
           {project.description}
         </p>
-        <div
-          className={`w-full shrink-0 rounded-[7.32px] bg-gradient-to-b from-[#4f4f4f] to-[#141414] md:rounded-[7.319px] ${aspect}`}
-        />
+        {project.mediaVideoSrc != null && project.mediaVideoSrc !== "" ? (
+          <div
+            className={`w-full shrink-0 bg-[#141414] leading-none ${MEDIA_CORNER}`}
+          >
+            <video
+              className={`block h-auto w-full max-w-full align-top ${MEDIA_CORNER} bg-[#141414]`}
+              style={mediaVideoCropStyle(project.mediaBottomCrop)}
+              src={project.mediaVideoSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-label={`${project.name} product video`}
+            />
+          </div>
+        ) : (
+          <div
+            className={`w-full shrink-0 bg-gradient-to-b from-[#4f4f4f] to-[#141414] ${MEDIA_CORNER} ${aspect}`}
+          />
+        )}
       </div>
 
       {/* Footer — Figma 129:8230: gap-4, pl-2 */}

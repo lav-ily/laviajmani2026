@@ -9,24 +9,24 @@ export function Hero() {
           <span className="font-serif-display text-[27px] md:text-[34px] lg:text-[44.836px] tracking-[-0.82px] md:tracking-[-1px] lg:tracking-[-1.35px]">
             Lavi Ajmani{" "}
           </span>
-          <span className="font-sans font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] lg:ml-[2px]">
+          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] lg:ml-[2px]">
             is a product designer
           </span>
-          <span className="font-sans font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] ml-1">
+          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] ml-1">
             ❋
           </span>
         </div>
 
         {/* Line 2: "tinkering on web & mobile experiences" */}
         <div className="flex items-center text-white leading-[1.01] md:leading-[0.85] mt-[2px] md:mt-[0.5px] lg:mt-[1px]">
-          <span className="font-sans font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] whitespace-nowrap">
+          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] whitespace-nowrap">
             tinkering on web &amp; mobile experiences
           </span>
         </div>
 
         {/* Line 3: "in 🍏 New York City." */}
         <div className="flex items-center text-white leading-[1.01] md:leading-[0.85] mt-[2px] md:mt-[0.5px] lg:mt-[1px]">
-          <span className="font-sans font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px]">
+          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px]">
             in
           </span>
           <Image

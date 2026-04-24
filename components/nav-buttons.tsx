@@ -15,7 +15,7 @@ export function NavButtons() {
             flex-1 flex items-center justify-center
             bg-[rgba(255,255,255,0.05)] rounded-full
             h-[26px] md:h-[39px]
-            font-sans font-light
+            font-sf-pro-display font-light
             text-[12px] md:text-[14px] lg:text-[16px]
             text-white text-center
             tracking-[-0.31px] md:tracking-[-0.48px]
