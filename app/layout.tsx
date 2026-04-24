@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
-import { SITE_TAGLINE } from "@/lib/hero-content";
+import { HERO, SITE_TAGLINE } from "@/lib/hero-content";
 import "./globals.css";
 
 const geist = Geist({
@@ -10,10 +10,10 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Lavi Ajmani — Product Designer",
+  title: HERO.name,
   description: SITE_TAGLINE,
   openGraph: {
-    title: "Lavi Ajmani — Product Designer",
+    title: HERO.name,
     description: SITE_TAGLINE,
     type: "website",
   },
