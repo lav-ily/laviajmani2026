@@ -8,12 +8,18 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
  * Total width: 10+93+16+93+16+93+10 = 331
  *
  * On light/white content behind the bar: label colors switch for legibility.
+ * Inactive items: light wash + text brighten (dark) / subtle fill + text darken (on light).
  */
 
 const items = [
   { label: "Work", href: "#", active: true },
-  { label: "Research", href: "#research", active: false },
-  { label: "Contact", href: "#contact", active: false },
+  {
+    label: "Research",
+    href: "https://32paces.tumblr.com/",
+    active: false,
+    external: true,
+  },
+  { label: "Contact", href: "mailto:lavi@laviajmani.com", active: false },
 ] as const;
 
 const BAR =
@@ -38,7 +44,9 @@ const BTN_ACTIVE =
 const BTN_INACTIVE =
   "rounded-[20px] bg-transparent text-[#cacaca] " +
   "[-webkit-backdrop-filter:none] [backdrop-filter:none] " +
-  "visited:text-[#cacaca] active:bg-transparent hover:bg-transparent";
+  "visited:text-[#cacaca] " +
+  "hover:bg-[rgba(255,255,255,0.12)] hover:text-[rgba(255,255,255,0.95)] " +
+  "active:bg-[rgba(255,255,255,0.08)]";
 
 const BTN_ACTIVE_ON_LIGHT =
   "rounded-[38px] bg-[rgba(255,255,255,0.2)] text-[#595959] " +
@@ -48,7 +56,9 @@ const BTN_ACTIVE_ON_LIGHT =
 const BTN_INACTIVE_ON_LIGHT =
   "rounded-[20px] bg-transparent text-[#929292] " +
   "[-webkit-backdrop-filter:none] [backdrop-filter:none] " +
-  "visited:text-[#929292] active:bg-transparent hover:bg-transparent";
+  "visited:text-[#929292] " +
+  "hover:bg-[rgba(0,0,0,0.06)] hover:text-[#6a6a6a] " +
+  "active:bg-[rgba(0,0,0,0.04)]";
 
 function rectsOverlap(a: DOMRect, b: DOMRect): boolean {
   return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
@@ -101,6 +111,9 @@ export function BottomNav() {
               key={item.label}
               href={item.href}
               aria-current={item.active ? "page" : undefined}
+              {...("external" in item && item.external
+                ? { target: "_blank" as const, rel: "noopener noreferrer" as const }
+                : {})}
               className={`${BTN} ${
                 item.active
                   ? onLight

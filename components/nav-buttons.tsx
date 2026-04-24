@@ -1,7 +1,7 @@
 const navItems = [
   { label: "About", href: "#about", mobileLabel: "About", showMobile: true },
   { label: "Research", href: "#research", showMobile: true },
-  { label: "Contact", href: "#contact", mobileLabel: "Contact", showMobile: true },
+  { label: "Contact", href: "mailto:lavi@laviajmani.com", mobileLabel: "Contact", showMobile: true },
 ];
 
 export function NavButtons() {
