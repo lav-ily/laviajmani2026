@@ -16,8 +16,15 @@ export interface Project {
   mediaAspect?: "tall" | "short";
   /** If set, media area shows this video (public path) instead of the placeholder gradient */
   mediaVideoSrc?: string;
+  /** Natural pixel size of the video file — sets width/height on <video> for correct aspect + less layout shift */
+  mediaVideoSize?: { width: number; height: number };
   /** Pixels cropped from the bottom of the media (e.g. video) */
   mediaBottomCrop?: number;
+  /**
+   * When "light", the card media is treated as a light/white background region. The bottom
+   * nav then switches to darker label colors when the bar overlaps that media.
+   */
+  navContrast?: "light";
 }
 
 export const projects: Project[] = [
@@ -33,6 +40,7 @@ export const projects: Project[] = [
     mediaAspect: "tall",
     mediaVideoSrc: "/videos/lavibullpen.mp4",
     mediaBottomCrop: 4,
+    navContrast: "light",
   },
   {
     name: "Delphi",
@@ -56,6 +64,9 @@ export const projects: Project[] = [
     time: "11:11 AM",
     date: "07 July 2022",
     mediaAspect: "short",
+    mediaVideoSrc: "/videos/hopindemo-converted.mp4",
+    mediaVideoSize: { width: 1920, height: 1080 },
+    navContrast: "light",
   },
   {
     name: "Dispo",
