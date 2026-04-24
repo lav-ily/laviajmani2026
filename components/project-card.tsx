@@ -159,8 +159,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       }}
       className={`
         font-system relative flex w-full max-w-full flex-col
-        max-md:max-w-[361px] max-md:gap-[14px] max-md:rounded-[24px] max-md:p-[18px] max-md:border-0
-        md:max-w-[546px] md:gap-3
+        max-md:max-w-[361px] max-md:rounded-[24px] max-md:p-[18px] max-md:border-0
+        md:max-w-[546px]
         [transform:translateZ(0)]
         overflow-hidden
         bg-[rgba(58,58,58,0.36)]
@@ -177,7 +177,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         className="pointer-events-none absolute inset-0 max-md:hidden rounded-[inherit] bg-gradient-to-b from-[rgba(255,255,255,0.04)] via-[rgba(255,255,255,0.015)] to-[rgba(255,255,255,0)]"
       />
 
-      <div className="relative z-10 flex w-full min-h-0 items-center max-md:min-h-0 md:min-h-[46px]">
+      <div className="relative z-10 flex w-full min-h-0 flex-col gap-[14px]">
+      <div className="flex w-full min-h-0 items-center max-md:min-h-0 md:min-h-[46px]">
         <div className="flex w-full min-h-0 shrink-0 items-start gap-2 max-md:gap-2">
           <div className="box-border flex shrink-0 items-center py-0.5 pr-0.5 max-md:items-center max-md:justify-center md:box-border md:h-[46px] md:w-[44px] md:items-center md:justify-center">
             <ProjectIcon project={project} />
@@ -211,11 +212,17 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
 
-      <div id={mediaAnchorId} className="relative z-10 w-full shrink-0 scroll-mt-24">
+      <div
+        id={mediaAnchorId}
+        className="relative z-10 w-full shrink-0 scroll-mt-24"
+        {...(project.navContrast === "light" ? { "data-nav-contrast": "light" } : {})}
+      >
         {project.mediaVideoSrc != null && project.mediaVideoSrc !== "" ? (
           <div className={`w-full bg-[#141414] leading-none ${MEDIA_CORNER}`}>
             <video
-              className={`block h-auto w-full max-w-full align-top [transform:translateZ(0)] ${MEDIA_CORNER} bg-[#141414]`}
+              width={project.mediaVideoSize?.width}
+              height={project.mediaVideoSize?.height}
+              className={`block h-auto w-full max-w-full align-top [transform:translateZ(0)] object-contain [object-position:center] ${MEDIA_CORNER} bg-[#141414]`}
               style={mediaVideoCropStyle(project.mediaBottomCrop)}
               src={project.mediaVideoSrc}
               autoPlay
@@ -241,6 +248,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         <span className="shrink-0 text-base font-normal leading-[normal] max-md:whitespace-nowrap">
           {project.date}
         </span>
+      </div>
       </div>
     </motion.div>
   );
