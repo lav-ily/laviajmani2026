@@ -53,6 +53,14 @@
   --color-dark-800: #1f2124;
   --color-card-bg: rgba(58, 58, 58, 0.36);
   --color-nav-bg: rgba(255, 255, 255, 0.05);
+
+  /* bottom-nav: same inset as `bottom-nav.tsx`; also the gap we want *above* the bar */
+  --nav-to-viewport-bottom: calc(2.125rem + env(safe-area-inset-bottom, 0px));
+  --nav-bar-height: 3.5rem;
+  /* h_nav + gap_above + gap_below, with gap = --nav-to-viewport-bottom (see app/page) */
+  --page-pad-below-content: calc(
+    var(--nav-bar-height) + 2 * var(--nav-to-viewport-bottom)
+  );
 }
 
 @theme inline {
