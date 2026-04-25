@@ -57,9 +57,9 @@
   /* bottom-nav: same inset as `bottom-nav.tsx`; also the gap we want *above* the bar */
   --nav-to-viewport-bottom: calc(2.125rem + env(safe-area-inset-bottom, 0px));
   --nav-bar-height: 3.5rem;
-  /* h_nav + gap_above + gap_below, with gap = --nav-to-viewport-bottom (see app/page) */
+  /* Tight scroll clearance: bar height + bottom inset + small buffer (one inset, not two) */
   --page-pad-below-content: calc(
-    var(--nav-bar-height) + 2 * var(--nav-to-viewport-bottom)
+    var(--nav-bar-height) + var(--nav-to-viewport-bottom) + 0.25rem
   );
 }
 
@@ -78,6 +78,8 @@ body {
   color: var(--color-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Scroll clearance for fixed `BottomNav` (height + insets) */
+  padding-bottom: var(--page-pad-below-content);
 }
 
 .font-serif-display {
