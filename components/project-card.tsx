@@ -194,7 +194,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
 
-      <div className="relative z-10 flex w-full min-w-0 flex-col max-md:gap-0.5">
+      <div className="relative z-10 flex w-full min-w-0 flex-col max-md:gap-1 max-md:-mb-1">
         <p
           id={descriptionId}
           className={`m-0 w-full min-w-0 break-words text-base font-normal not-italic leading-[21px] text-white md:min-w-0 md:pb-0 md:text-[17px] ${
