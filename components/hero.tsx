@@ -47,16 +47,17 @@ export function Hero() {
       </div>
 
       <div className="flex w-full max-w-[333px] flex-col items-center text-center text-white md:hidden">
-        <div className="flex w-full max-w-full flex-wrap items-baseline justify-center gap-x-0.5 leading-none">
+        {/* flex-nowrap: avoids line-break jump when web fonts swap in (widths match sooner via next/font). */}
+        <div className="flex w-full max-w-full flex-nowrap items-baseline justify-center gap-x-0.5 leading-none">
           <span className="font-serif-display text-[40px] not-italic tracking-[-1.2px]">
             {HERO.name}
           </span>
-          <span className={`${geist} text-[36px] leading-none tracking-[-2.88px]`}>
+          <span className={`${geist} shrink-0 text-[36px] leading-none tracking-[-2.88px]`}>
             {HERO.isA}
           </span>
         </div>
         <div
-          className={`mt-0 flex flex-wrap items-center justify-center gap-x-0.5 leading-none ${geist} text-[36px] tracking-[-2.88px]`}
+          className={`mt-0 flex flex-nowrap items-center justify-center gap-x-0.5 leading-none ${geist} text-[36px] tracking-[-2.88px]`}
         >
           <span>{HERO.productDesigner}</span>
           <span>{HERO.symbol}</span>
@@ -69,7 +70,7 @@ export function Hero() {
             {experienceLine2}
           </p>
         ) : null}
-        <div className="mt-0 flex flex-wrap items-center justify-center gap-x-0 text-[36px]">
+        <div className="mt-0 flex flex-nowrap items-center justify-center gap-x-0 text-[36px]">
           <span className={`${geist} leading-none tracking-[-2.88px]`}>{HERO.in}</span>
           <Image
             src="/icons/apple.svg"

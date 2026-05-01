@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -10,6 +11,53 @@ import "./globals.css";
 const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  adjustFontFallback: true,
+});
+
+const appleGaramond = localFont({
+  src: "../public/fonts/AppleGaramond-LightItalic.woff2",
+  weight: "300",
+  style: "italic",
+  variable: "--font-apple-garamond",
+  display: "swap",
+  preload: true,
+  adjustFontFallback: "Times New Roman",
+});
+
+const sfProDisplay = localFont({
+  src: [
+    {
+      path: "../public/fonts/sf-pro-display/SF-Pro-Display-Light.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sf-pro-display/SF-Pro-Display-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sf-pro-display/SF-Pro-Display-Medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sf-pro-display/SF-Pro-Display-Semibold.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/sf-pro-display/SF-Pro-Display-Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-sf-pro-display",
+  display: "swap",
+  preload: true,
+  adjustFontFallback: "Arial",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +79,10 @@ export default function RootLayout({
   const recaptchaSiteKey = getRecaptchaSiteKey();
 
   return (
-    <html lang="en" className={`${geist.variable} antialiased`}>
+    <html
+      lang="en"
+      className={`${geist.variable} ${appleGaramond.variable} ${sfProDisplay.variable} antialiased`}
+    >
       <body>
         {children}
         {gaId ? (
