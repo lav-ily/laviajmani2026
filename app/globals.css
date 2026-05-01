@@ -1,49 +1,6 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Apple Garamond";
-  src: url("/fonts/AppleGaramond-LightItalic.woff2") format("woff2");
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* SF Pro Display — self-hosted (see Figma: nav, cards, hero sans) */
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("/fonts/sf-pro-display/SF-Pro-Display-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("/fonts/sf-pro-display/SF-Pro-Display-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("/fonts/sf-pro-display/SF-Pro-Display-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("/fonts/sf-pro-display/SF-Pro-Display-Semibold.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("/fonts/sf-pro-display/SF-Pro-Display-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* Custom fonts load via next/font/local in app/layout.tsx (preload + adjusted fallbacks). */
 
 :root {
   --color-primary: #4fffab;
@@ -91,23 +48,22 @@ body {
 }
 
 .font-serif-display {
-  font-family: "Apple Garamond", Georgia, "Times New Roman", serif;
+  font-family: var(--font-apple-garamond), Georgia, "Times New Roman", serif;
   font-weight: 300;
   font-style: italic;
 }
 
-/* Figma: SF Pro Display (cards, bottom nav, UI). Self-hosted first, then system UI fonts. */
+/* Figma: SF Pro Display (cards, bottom nav, UI). */
 .font-system {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+  font-family: var(--font-sf-pro-display), -apple-system, BlinkMacSystemFont, "SF Pro Text",
     system-ui, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-synthesis: none;
 }
 
-/* Hero / anywhere Figma used SF Pro Display Light, Regular, etc. (weight from utilities). */
 .font-sf-pro-display {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: var(--font-sf-pro-display), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-style: normal;
   font-synthesis: none;
 }
