@@ -82,6 +82,14 @@ body {
   padding-bottom: var(--page-pad-below-content);
 }
 
+/* reCAPTCHA v3 badge (injected by Google). Scale only — badge must stay visible per Google policies. */
+.grecaptcha-badge {
+  transform: scale(0.72);
+  transform-origin: right bottom;
+  -webkit-transform: scale(0.72);
+  -webkit-transform-origin: right bottom;
+}
+
 .font-serif-display {
   font-family: "Apple Garamond", Georgia, "Times New Roman", serif;
   font-weight: 300;
