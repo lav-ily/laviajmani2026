@@ -4,6 +4,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 
 import { HERO, SITE_TAGLINE } from "@/lib/hero-content";
+import { getRecaptchaSiteKey } from "@/lib/recaptcha";
 import "./globals.css";
 
 const geist = Geist({
@@ -27,6 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const recaptchaSiteKey = getRecaptchaSiteKey();
 
   return (
     <html lang="en" className={`${geist.variable} antialiased`}>
@@ -47,6 +49,12 @@ gtag('config', '${gaId}');
               `}
             </Script>
           </>
+        ) : null}
+        {recaptchaSiteKey ? (
+          <Script
+            src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`}
+            strategy="lazyOnload"
+          />
         ) : null}
         <Analytics />
       </body>
