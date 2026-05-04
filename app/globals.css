@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Custom fonts load via next/font/local in app/layout.tsx (preload + adjusted fallbacks). */
+/* Display fonts load via next/font in app/layout.tsx. UI text uses native system fonts. */
 
 :root {
   --color-primary: #4fffab;
@@ -53,17 +53,17 @@ body {
   font-style: italic;
 }
 
-/* Figma: SF Pro Display (cards, bottom nav, UI). */
+/* Figma: SF Pro Display intent, served by the native system stack to avoid late webfont swaps. */
 .font-system {
-  font-family: var(--font-sf-pro-display), -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   font-style: normal;
   font-weight: 400;
   font-synthesis: none;
 }
 
 .font-sf-pro-display {
-  font-family: var(--font-sf-pro-display), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui,
+    sans-serif;
   font-style: normal;
   font-synthesis: none;
 }

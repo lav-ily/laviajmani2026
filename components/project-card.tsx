@@ -230,7 +230,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 muted
                 loop
                 playsInline
-                preload="auto"
+                preload="metadata"
                 aria-label={`${project.name} product video`}
               />
             </div>
