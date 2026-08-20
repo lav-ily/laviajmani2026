@@ -1,18 +1,28 @@
+import { About } from "@/components/about";
+import { ANote } from "@/components/a-note";
 import { BottomNav } from "@/components/bottom-nav";
 import { Hero } from "@/components/hero";
-import { ProjectFeed } from "@/components/project-feed";
+import { RefinementBanner } from "@/components/refinement-banner";
+import { Research } from "@/components/research";
+import { WorkGallery } from "@/components/work-gallery";
+
+/** Figma `625:15508` — 174px vertical rhythm between major sections on desktop. */
+const SECTION_GAP = "gap-20 md:gap-[174px]";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#141414]">
-      <div className="mx-auto flex max-w-full flex-col items-center gap-5 px-[30px] pt-6 max-md:gap-5 md:max-w-[unset] md:gap-7 md:px-9 md:py-9 md:pt-9">
-        <header className="flex w-full max-w-[333px] flex-col items-center md:max-w-[546px]">
+    <div className="min-h-screen overflow-x-hidden bg-[#f9faff] text-[#1e1e1e]">
+      <RefinementBanner />
+      <div className={`mx-auto flex w-full flex-col ${SECTION_GAP}`}>
+        <div
+          className={`mx-auto flex w-full max-w-[1280px] flex-col items-center ${SECTION_GAP} md:px-0`}
+        >
           <Hero />
-        </header>
-
-        <main className="flex w-full max-w-[361px] flex-col items-center md:max-w-[546px]">
-          <ProjectFeed />
-        </main>
+          <WorkGallery />
+          <Research />
+        </div>
+        <About />
+        <ANote />
       </div>
       <BottomNav />
     </div>
