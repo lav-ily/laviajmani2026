@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
@@ -11,9 +11,17 @@ import "./globals.css";
 const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["300", "400"],
   display: "swap",
   preload: true,
   adjustFontFallback: true,
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const appleGaramond = localFont({
@@ -47,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${appleGaramond.variable} antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${appleGaramond.variable} antialiased`}
     >
       <body>
         {children}

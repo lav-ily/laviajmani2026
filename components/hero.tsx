@@ -1,89 +1,60 @@
-import Image from "next/image";
+import type { ReactNode } from "react";
 
-import { experienceLinesForMobile, HERO } from "@/lib/hero-content";
+import { HERO } from "@/lib/hero-content";
+import { StarMark } from "./star-mark";
 
-const geist = "font-[family:var(--font-geist-sans),sans-serif] font-light";
+/** Figma `625:15509` headline type scale (desktop values with mobile ratio). */
+const SERIF = "font-hero-serif text-[28px] tracking-[-0.84px] md:text-[43px] md:tracking-[-1.29px]";
+const SANS = "font-hero-sans text-[24px] tracking-[-1.92px] md:text-[38px] md:tracking-[-3.04px]";
+
+function HeroLine({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`mb-[-10px] flex h-auto items-center md:mb-[-14px] md:h-[50px] ${className}`}
+    >
+      {children}
+    </span>
+  );
+}
 
 export function Hero() {
-  const [experienceLine1, experienceLine2] = experienceLinesForMobile(HERO.experience);
-
   return (
-    <div className="flex w-full max-w-[333px] flex-col items-center">
-      {/* md+ — same copy as mobile, layout/typography via responsive classes */}
-      <div className="hidden flex-col items-center md:flex">
-        <div className="flex items-baseline text-white leading-[1.01] md:leading-[0.85]">
-          <span className="font-serif-display text-[27px] md:text-[34px] lg:text-[44.836px] tracking-[-0.82px] md:tracking-[-1px] lg:tracking-[-1.35px]">
-            {HERO.name}{" "}
+    <header
+      id="hero"
+      className="flex min-h-[100svh] w-full scroll-mt-0 items-center justify-center bg-[#f9faff] px-5 md:px-0"
+    >
+      <h1 className="flex w-full max-w-[549px] flex-col items-center text-[#1e1e1e]">
+        <HeroLine>
+          <span className="flex items-center whitespace-nowrap">
+            <span className="flex items-baseline gap-[4px]">
+              <span className={SERIF}>{HERO.name}</span>
+              <span className={SANS}>
+                {HERO.isA} {HERO.productDesigner}
+              </span>
+            </span>
+            <span className="relative ml-0 size-[28px] shrink-0 md:ml-0 md:size-[38px]">
+              <StarMark className="size-full" />
+            </span>
           </span>
-          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] lg:ml-[2px]">
-            {HERO.isA} {HERO.productDesigner}
-          </span>
-          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] ml-1">
-            {HERO.symbol}
-          </span>
-        </div>
+        </HeroLine>
 
-        <div className="mt-[2px] flex items-center text-white leading-[1.01] md:mt-[0.5px] md:leading-[0.85] lg:mt-[1px]">
-          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px] whitespace-nowrap">
-            {HERO.experience}
-          </span>
-        </div>
+        <HeroLine className="justify-center">
+          <span className={`${SANS} whitespace-nowrap`}>{HERO.experience}</span>
+        </HeroLine>
 
-        <div className="mt-[2px] flex items-center text-white leading-[1.01] md:mt-[0.5px] md:leading-[0.85] lg:mt-[1px]">
-          <span className="font-sf-pro-display font-light text-[22.9px] md:text-[28px] lg:text-[37.567px] tracking-[-1.83px] md:tracking-[-2.25px] lg:tracking-[-3px]">
-            {HERO.in}
+        <HeroLine className="justify-center px-0 md:px-[14px]">
+          <span className="flex items-baseline gap-[6px] whitespace-nowrap">
+            <span className={SANS}>{HERO.in}</span>
+            <span className={SERIF}>{HERO.city}</span>
           </span>
-          <Image
-            src="/icons/apple.svg"
-            alt=""
-            width={33}
-            height={33}
-            className="mx-1 w-[20px] h-[20px] md:w-[24px] md:h-[24px] lg:w-[33px] lg:h-[33px]"
-          />
-          <span className="font-serif-display whitespace-nowrap text-[27.3px] md:text-[34px] lg:text-[44.838px] tracking-[-0.82px] md:tracking-[-1px] lg:tracking-[-1.35px]">
-            {HERO.city}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex w-full max-w-[333px] flex-col items-center text-center text-white md:hidden">
-        {/* flex-nowrap: avoids line-break jump when web fonts swap in (widths match sooner via next/font). */}
-        <div className="flex w-full max-w-full flex-nowrap items-baseline justify-center gap-x-0.5 leading-none">
-          <span className="font-serif-display text-[40px] not-italic tracking-[-1.2px]">
-            {HERO.name}
-          </span>
-          <span className={`${geist} shrink-0 text-[36px] leading-none tracking-[-2.88px]`}>
-            {HERO.isA}
-          </span>
-        </div>
-        <div
-          className={`mt-0 flex flex-nowrap items-center justify-center gap-x-0.5 leading-none ${geist} text-[36px] tracking-[-2.88px]`}
-        >
-          <span>{HERO.productDesigner}</span>
-          <span>{HERO.symbol}</span>
-        </div>
-        <p className={`m-0 mt-0 ${geist} text-[36px] leading-none tracking-[-2.88px]`}>
-          {experienceLine1}
-        </p>
-        {experienceLine2 !== "" ? (
-          <p className={`m-0 -mt-0.5 ${geist} text-[36px] leading-none tracking-[-2.88px]`}>
-            {experienceLine2}
-          </p>
-        ) : null}
-        <div className="mt-0 flex flex-nowrap items-center justify-center gap-x-0 text-[36px]">
-          <span className={`${geist} leading-none tracking-[-2.88px]`}>{HERO.in}</span>
-          <Image
-            src="/icons/apple.svg"
-            alt=""
-            width={32}
-            height={32}
-            className="size-[31.45px] shrink-0"
-          />
-          <span className="font-serif-display text-[40px] not-italic leading-none tracking-[-1.2px]">
-            {HERO.city}
-          </span>
-        </div>
-      </div>
-    </div>
+        </HeroLine>
+      </h1>
+    </header>
   );
 }

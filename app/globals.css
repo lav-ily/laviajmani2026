@@ -1,20 +1,19 @@
 @import "tailwindcss";
 
-/* Display fonts load via next/font in app/layout.tsx. UI text uses native system fonts. */
-
 :root {
-  --color-primary: #4fffab;
-  --color-bg: #141414;
-  --color-bg-deep: #06121b;
+  --color-bg: #f9faff;
+  --color-text: #1e1e1e;
   --color-white: #ffffff;
-  --color-dark-800: #1f2124;
-  --color-card-bg: rgba(58, 58, 58, 0.36);
-  --color-nav-bg: rgba(255, 255, 255, 0.05);
+  --color-card: #e4e4e4;
+  --color-tag-year: #797979;
+  --color-tag-meta: #565656;
+  --color-accent: #002fa7;
+  --color-nav-label: #696969;
+  --color-nav-active: #eaeaea;
+  --color-caption: #666666;
 
-  /* bottom-nav: same inset as `bottom-nav.tsx`; also the gap we want *above* the bar */
   --nav-to-viewport-bottom: calc(2.125rem + env(safe-area-inset-bottom, 0px));
   --nav-bar-height: 3.5rem;
-  /* Tight scroll clearance: bar height + bottom inset + small buffer (one inset, not two) */
   --page-pad-below-content: calc(
     var(--nav-bar-height) + var(--nav-to-viewport-bottom) + 0.25rem
   );
@@ -22,24 +21,23 @@
 
 @theme inline {
   --color-background: var(--color-bg);
-  --color-foreground: var(--color-white);
+  --color-foreground: var(--color-text);
   --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 html {
-  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--color-bg);
-  color: var(--color-white);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Scroll clearance for fixed `BottomNav` (height + insets) */
   padding-bottom: var(--page-pad-below-content);
 }
 
-/* reCAPTCHA v3 badge (injected by Google). Scale only — badge must stay visible per Google policies. */
 .grecaptcha-badge {
   transform: scale(0.72);
   transform-origin: right bottom;
@@ -53,17 +51,15 @@ body {
   font-style: italic;
 }
 
-/* Figma: SF Pro Display intent, served by the native system stack to avoid late webfont swaps. */
-.font-system {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-synthesis: none;
+.font-hero-serif {
+  font-family: var(--font-apple-garamond), Georgia, "Times New Roman", serif;
+  font-weight: 300;
+  font-style: italic;
+  line-height: normal;
 }
 
-.font-sf-pro-display {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui,
-    sans-serif;
-  font-style: normal;
-  font-synthesis: none;
+.font-hero-sans {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 300;
+  line-height: normal;
 }
