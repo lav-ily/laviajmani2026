@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 
 import type { WorkItem } from "@/lib/projects";
-import { HopinPhone } from "./hopin-phone";
 import { StarMark } from "./star-mark";
 import { WorkTag } from "./work-tag";
 import { WorkVideo } from "./work-video";
@@ -24,102 +23,32 @@ const CONTENT_VARIANTS = {
   },
 };
 
-function WorkScreenshot({
-  src,
-  alt,
-  priority = false,
-  className = "object-cover",
-}: {
-  src: string;
-  alt: string;
-  priority?: boolean;
-  className?: string;
-}) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={alt}
-      decoding={priority ? "sync" : "async"}
-      fetchPriority={priority ? "high" : "auto"}
-      className={`absolute inset-0 size-full ${className}`}
-    />
-  );
-}
-
 function InProgressState() {
   return (
     <div className="absolute left-[calc(50%-0.75px)] top-1/2 h-[338px] w-[337px] -translate-x-1/2 -translate-y-1/2 overflow-clip rounded-[6px]">
       <div className="absolute left-[calc(50%+1px)] top-[calc(50%-19px)] -translate-x-1/2 -translate-y-1/2">
         <StarMark className="size-[38px]" variant="muted" />
       </div>
-      <div className="absolute left-[calc(50%-68px)] top-[calc(50%+26.5px)] -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-geist-sans)] text-[16px] font-normal leading-normal text-[#565656]">
-        Project in progress
+      <div className="absolute left-1/2 top-[calc(50%+26.5px)] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-geist-sans)] text-[16px] font-normal leading-normal text-[#565656]">
+        Samples in progress
       </div>
     </div>
   );
 }
 
-function CardMedia({
-  item,
-  isWide,
-  priority,
-}: {
-  item: WorkItem;
-  isWide: boolean;
-  priority: boolean;
-}) {
-  if (item.inProgress) {
-    return <InProgressState />;
-  }
-
-  if (item.variant === "phone") {
-    return (
-      <div className="absolute left-1/2 top-1/2 size-[min(510px,80vw)] -translate-x-1/2 -translate-y-1/2">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <HopinPhone />
-        </div>
-      </div>
-    );
-  }
-
+function CardMedia({ item, isWide }: { item: WorkItem; isWide: boolean }) {
   if (isWide && item.variant === "video" && item.mediaSrc) {
     return <WorkVideo src={item.mediaSrc} />;
   }
 
-  if (isWide && item.mediaSrc) {
-    return (
-      <div className="absolute left-1/2 top-[12%] h-[min(84vw,673px)] w-[min(92vw,765px)] -translate-x-1/2 md:left-[233px] md:top-[68px] md:h-[673px] md:w-[765px] md:translate-x-0">
-        <WorkScreenshot
-          src={item.mediaSrc}
-          alt={item.mediaAlt ?? item.name}
-          priority={priority}
-          className="object-cover object-top"
-        />
-      </div>
-    );
-  }
-
-  if (item.mediaSrc) {
-    return (
-      <div
-        className={`absolute left-[calc(50%+0.25px)] size-[min(510px,80vw)] -translate-x-1/2 -translate-y-1/2 ${
-          item.name === "Bullpen" ? "top-[calc(50%+1px)]" : "top-1/2"
-        }`}
-      >
-        <WorkScreenshot src={item.mediaSrc} alt={item.mediaAlt ?? item.name} priority={priority} />
-      </div>
-    );
-  }
-
-  return null;
+  return <InProgressState />;
 }
 
 export function WorkCard({ item, priority = false }: { item: WorkItem; priority?: boolean }) {
   const isWide = item.layout === "wide";
   const disableHoverScale = item.variant === "video";
 
-  const media = <CardMedia item={item} isWide={isWide} priority={priority} />;
+  const media = <CardMedia item={item} isWide={isWide} />;
 
   if (disableHoverScale) {
     return (
