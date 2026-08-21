@@ -53,8 +53,8 @@ function InProgressState() {
       <div className="absolute left-[calc(50%+1px)] top-[calc(50%-19px)] -translate-x-1/2 -translate-y-1/2">
         <StarMark className="size-[38px]" variant="muted" />
       </div>
-      <div className="absolute left-[calc(50%-68px)] top-[calc(50%+26.5px)] -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-geist-sans)] text-[16px] font-normal leading-normal text-[#565656]">
-        Project in progress
+      <div className="absolute left-1/2 top-[calc(50%+26.5px)] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-geist-sans)] text-[16px] font-normal leading-normal text-[#565656]">
+        Samples in progress
       </div>
     </div>
   );
