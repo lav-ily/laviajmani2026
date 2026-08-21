@@ -27,7 +27,7 @@ export function Hero() {
   return (
     <header
       id="hero"
-      className="flex min-h-[100svh] w-full scroll-mt-0 items-center justify-center bg-[#f9faff] px-5 md:px-0"
+      className="flex min-h-[75svh] w-full scroll-mt-0 items-center justify-center bg-[#f9faff] px-5 md:px-0"
     >
       <h1 className="flex w-full max-w-[549px] flex-col items-center text-[#1e1e1e]">
         <HeroLine>
