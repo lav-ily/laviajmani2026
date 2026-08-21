@@ -9,15 +9,13 @@ const MESSAGE =
   "This website is still being refined. Check back in a few days for the full experience!";
 
 export function RefinementBanner() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   const dismiss = useCallback(() => {
     setVisible(false);
   }, []);
 
   useEffect(() => {
-    setVisible(true);
-
     const onScroll = () => {
       if (window.scrollY > 8) dismiss();
     };
