@@ -1,17 +1,38 @@
 import { animate } from "framer-motion";
 
-/** Sections that fill the viewport and centre content with flexbox. */
-const VIEWPORT_SECTIONS = new Set(["hero", "about", "note"]);
-
 let scrollControl: ReturnType<typeof animate> | null = null;
 
-function getScrollTarget(section: HTMLElement, id: string): number {
-  if (VIEWPORT_SECTIONS.has(id)) {
-    return section.offsetTop;
+function clampScroll(y: number) {
+  const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  return Math.min(max, Math.max(0, y));
+}
+
+function getScrollMargin(section: HTMLElement) {
+  return Number.parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
+}
+
+/** Fit the full About block in view, centered below the nav with equal top/bottom breathing room. */
+function getAboutScrollTarget(section: HTMLElement) {
+  const navOffset = getScrollMargin(section);
+  const availableHeight = window.innerHeight - navOffset;
+  const sectionHeight = section.offsetHeight;
+  const sectionTop = section.offsetTop;
+
+  if (sectionHeight <= availableHeight) {
+    const balancedPad = (availableHeight - sectionHeight) / 2;
+    return clampScroll(sectionTop - navOffset - balancedPad);
   }
 
-  const scrollMargin = Number.parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
-  return section.offsetTop - scrollMargin;
+  return clampScroll(sectionTop - navOffset);
+}
+
+function getScrollTarget(section: HTMLElement, id: string) {
+  if (id === "about") {
+    return getAboutScrollTarget(section);
+  }
+
+  const scrollMargin = getScrollMargin(section);
+  return clampScroll(section.offsetTop - scrollMargin);
 }
 
 /** Smooth vertical scroll via Motion spring — always resets horizontal drift. */

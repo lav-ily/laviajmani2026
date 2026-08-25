@@ -2,104 +2,31 @@
 
 import { useEffect, useState } from "react";
 
-import { HERO } from "@/lib/hero-content";
-import { dismissRefinementBanner } from "@/lib/refinement-banner";
 import { scrollToSection } from "@/lib/scroll-to-section";
-import { NOTE } from "@/lib/site-copy";
 
-type NavId = "hero" | "work" | "research" | "about" | "note";
+type NavId = "research" | "about" | "work";
 
 const items: ReadonlyArray<{
   id: NavId;
   href: string;
-  label?: string;
-  icon?: "star" | "note";
-  widthClass: string;
-  ariaLabel?: string;
+  label: string;
 }> = [
-  {
-    id: "hero",
-    href: "#hero",
-    icon: "star",
-    widthClass: "w-[80px]",
-    ariaLabel: HERO.name,
-  },
-  { id: "work", href: "#work", label: "Work", widthClass: "w-[140px]" },
-  {
-    id: "research",
-    href: "#research",
-    label: "Research",
-    widthClass: "w-[140px]",
-  },
-  { id: "about", href: "#about", label: "About", widthClass: "w-[140px]" },
-  {
-    id: "note",
-    href: "#note",
-    icon: "note",
-    widthClass: "w-[80px]",
-    ariaLabel: NOTE.title,
-  },
+  { id: "about", href: "#about", label: "About" },
+  { id: "work", href: "#work", label: "Work" },
+  { id: "research", href: "#research", label: "Research" },
 ];
 
-const BAR_SHELL =
-  "relative isolate w-max max-w-[calc(100vw-1rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))]";
-
-/** Opaque plate — box-shadow only renders evenly on a solid, non-filtered surface. */
-const BAR_SHADOW =
-  "pointer-events-none absolute inset-0 rounded-[44px] bg-white shadow-[4px_4px_8px_0px_rgba(33,33,33,0.16)]";
-
-const BAR =
-  "relative z-[1] box-border flex h-14 w-max shrink-0 select-none items-stretch justify-center gap-4 " +
-  "rounded-[44px] bg-white/85 px-2.5 py-2 " +
-  "backdrop-blur-[20px] backdrop-saturate-150 [-webkit-backdrop-filter:blur(20px)_saturate(150%)]";
-
 const BTN =
-  "font-[family-name:var(--font-geist-sans)] box-border flex h-full shrink-0 items-center justify-center overflow-hidden " +
-  "px-4 py-1.5 text-center text-[16px] font-normal leading-normal no-underline " +
-  "whitespace-nowrap text-[#696969] " +
-  "transition-[background-color,border-radius,color] duration-200 ease-out " +
-  "[&_img]:transition-[filter] [&_img]:duration-200 [&_img]:ease-out " +
-  "hover:[&_img]:brightness-[0.88] " +
+  "font-[family-name:var(--font-geist-sans)] shrink-0 px-0 py-1 text-[16px] font-normal leading-normal no-underline " +
+  "whitespace-nowrap transition-colors duration-200 ease-out " +
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
   "focus-visible:outline-[rgba(0,0,0,0.25)]";
 
-const BTN_ACTIVE =
-  "rounded-[38px] bg-[var(--color-nav-active)] " +
-  "hover:bg-[#e2e2e2] active:bg-[#dcdcdc]";
-
-const BTN_INACTIVE =
-  "rounded-[20px] bg-transparent " +
-  "hover:bg-[rgba(0,0,0,0.06)] hover:text-[#565656] " +
-  "active:bg-[rgba(0,0,0,0.04)]";
-
-function NavIcon({ icon }: { icon: "star" | "note" }) {
-  if (icon === "star") {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src="/icons/nav-star.svg"
-        alt=""
-        width={24}
-        height={24}
-        className="block size-6 max-w-none"
-      />
-    );
-  }
-
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/icons/nav-note.svg"
-      alt=""
-      width={24}
-      height={18}
-      className="block h-[18px] w-6 max-w-none"
-    />
-  );
-}
+const BTN_ACTIVE = "text-[#1e1e1e]";
+const BTN_INACTIVE = "text-[#696969] hover:text-[#565656]";
 
 export function BottomNav() {
-  const [active, setActive] = useState<NavId>("hero");
+  const [active, setActive] = useState<NavId>("about");
 
   useEffect(() => {
     const sections = items
@@ -110,7 +37,7 @@ export function BottomNav() {
 
     const syncActive = () => {
       const marker = window.scrollY + window.innerHeight * 0.35;
-      let current: NavId = "hero";
+      let current: NavId = "about";
 
       for (const item of items) {
         const section = document.getElementById(item.id);
@@ -142,33 +69,29 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-none fixed bottom-[var(--nav-to-viewport-bottom)] left-0 right-0 z-[100] pl-[max(0.5rem,env(safe-area-inset-left,0px))] pr-[max(0.5rem,env(safe-area-inset-right,0px))]"
+      className="pointer-events-none fixed top-0 right-0 left-0 z-[100] isolate h-[calc(var(--nav-bar-height)+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] [transform:translateZ(0)]"
     >
-      <div className="pointer-events-auto flex w-full justify-center">
-        <div className="max-w-full overflow-x-auto p-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className={BAR_SHELL}>
-            <div aria-hidden className={BAR_SHADOW} />
-            <div className={BAR}>
-              {items.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  aria-label={item.ariaLabel}
-                  aria-current={item.id === active ? "page" : undefined}
-                  className={`${BTN} ${item.widthClass} ${item.id === active ? BTN_ACTIVE : BTN_INACTIVE}`}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    dismissRefinementBanner();
-                    scrollToSection(item.id);
-                    window.history.pushState(null, "", item.href);
-                  }}
-                >
-                  {item.icon ? <NavIcon icon={item.icon} /> : item.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[rgba(249,250,255,0.55)] backdrop-blur-[20px] backdrop-saturate-150 [-webkit-backdrop-filter:blur(20px)_saturate(150%)]"
+      />
+
+      <div className="pointer-events-auto relative flex h-[var(--nav-bar-height)] items-center justify-end gap-6 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
+        {items.map((item) => (
+          <a
+            key={item.id}
+            href={item.href}
+            aria-current={item.id === active ? "page" : undefined}
+            className={`${BTN} ${item.id === active ? BTN_ACTIVE : BTN_INACTIVE}`}
+            onClick={(event) => {
+              event.preventDefault();
+              scrollToSection(item.id);
+              window.history.pushState(null, "", item.href);
+            }}
+          >
+            {item.label}
+          </a>
+        ))}
       </div>
     </nav>
   );

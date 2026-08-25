@@ -7,7 +7,7 @@ export function WorkGallery() {
   return (
     <section
       id="work"
-      className="flex w-full max-w-[1231px] scroll-mt-0 flex-col gap-6 px-4 md:mx-auto md:px-0"
+      className="flex w-full max-w-[1231px] scroll-mt-[var(--nav-scroll-offset)] flex-col gap-6 px-4 md:mx-auto md:px-0"
     >
       {delphi ? <WorkCard item={delphi} priority /> : null}
 
