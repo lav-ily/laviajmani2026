@@ -23,6 +23,8 @@ type StackPhoto = {
   alt: string;
   caption: string;
   captionWidth?: number;
+  captionClassName?: string;
+  balanceCaption?: boolean;
 };
 
 export function MobileInstaxStack({ photos }: { photos: [StackPhoto, StackPhoto] }) {

@@ -24,6 +24,11 @@ interface InstaxPhotoProps {
   width?: number;
   /** Caption box width — differs slightly per card in the design. */
   captionWidth?: number;
+  /** Optional caption top override in Figma card units (216px-wide space). */
+  captionTop?: number;
+  /** Vertically center caption in the strip below the photo well. */
+  balanceCaption?: boolean;
+  captionClassName?: string;
   className?: string;
 }
 
@@ -34,10 +39,20 @@ export function InstaxPhoto({
   rotate,
   width = CARD.width,
   captionWidth = CAPTION.width,
+  captionTop,
+  balanceCaption = false,
+  captionClassName = "",
   className = "",
 }: InstaxPhotoProps) {
   const scale = width / CARD.width;
   const px = (value: number) => `${value * scale}px`;
+  const captionZoneTop = WELL.y + WELL.height;
+  const captionZoneHeight = CARD.height - captionZoneTop;
+  const captionClasses = `[word-break:break-word] text-pretty text-center font-[family-name:var(--font-geist-mono)] font-normal leading-[normal] text-[#666] ${captionClassName}`;
+  const captionStyle = {
+    width: px(captionWidth),
+    fontSize: px(CAPTION.fontSize),
+  };
 
   return (
     <div
@@ -106,16 +121,29 @@ export function InstaxPhoto({
         />
       </div>
 
-      <p
-        className="absolute left-1/2 m-0 -translate-x-1/2 text-pretty text-center font-serif-display leading-normal text-[#666]"
-        style={{
-          top: px(CAPTION.y),
-          width: px(captionWidth),
-          fontSize: px(CAPTION.fontSize),
-        }}
-      >
-        {caption}
-      </p>
+      {balanceCaption ? (
+        <div
+          className="absolute inset-x-0 flex items-center justify-center"
+          style={{
+            top: px(captionZoneTop),
+            height: px(captionZoneHeight),
+          }}
+        >
+          <p className={`m-0 ${captionClasses}`} style={captionStyle}>
+            {caption}
+          </p>
+        </div>
+      ) : (
+        <p
+          className={`absolute left-1/2 m-0 -translate-x-1/2 ${captionClasses}`}
+          style={{
+            top: px(captionTop ?? CAPTION.y),
+            ...captionStyle,
+          }}
+        >
+          {caption}
+        </p>
+      )}
     </div>
   );
 }

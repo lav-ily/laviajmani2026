@@ -17,8 +17,8 @@ const items: ReadonlyArray<{
 ];
 
 const BTN =
-  "font-[family-name:var(--font-geist-sans)] shrink-0 px-0 py-1 text-[16px] font-normal leading-normal no-underline " +
-  "whitespace-nowrap transition-colors duration-200 ease-out " +
+  "inline-block origin-center font-[family-name:var(--font-geist-sans)] shrink-0 px-0 py-1 text-[16px] font-normal leading-normal no-underline " +
+  "whitespace-nowrap transition-[color,transform] duration-200 ease-out hover:scale-105 active:scale-95 " +
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
   "focus-visible:outline-[rgba(0,0,0,0.25)]";
 

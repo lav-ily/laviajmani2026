@@ -1,23 +1,25 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { motion } from "framer-motion";
 
+import { EMAIL, TWITTER } from "@/lib/site-copy";
 import { InstaxPhoto } from "./instax-photo";
 import { MobileInstaxStack } from "./mobile-instax-stack";
+import { TextLink } from "./text-link";
 
 const PHOTOS = {
   hey: {
     src: "/images/about/polaroid-hey.png",
     alt: "Lavi taking a mirror selfie",
     caption: "Hey!",
+    balanceCaption: true,
   },
   seoul: {
     src: "/images/about/polaroid-seoul.png",
     alt: "Lavi holding a tray of pastries at a café in Seoul",
-    caption: "In Seoul for my best friend’s wedding and for all of the café’s Seoul could offer",
+    caption: "In Seoul for my best friend’s wedding and for all of the cafés Seoul could offer",
     captionWidth: 158,
+    balanceCaption: true,
   },
 } as const;
 
@@ -52,10 +54,6 @@ const PHOTO_TRANSITION = {
   damping: 22,
   mass: 0.9,
 };
-
-function Accent({ children }: { children: ReactNode }) {
-  return <span className="text-[#002fa7]">{children}</span>;
-}
 
 function DesktopInstax({
   photo,
@@ -96,10 +94,10 @@ export function About() {
       id="about"
       className="flex w-full scroll-mt-[var(--nav-scroll-offset)] mb-[174px] max-[799px]:py-12 max-[799px]:items-start"
     >
-      {/* Figma `625:17130` — 1280×613 canvas, copy at x=397.5 (485px centred). */}
+      {/* Figma `625:17130` — 1280px canvas, copy at 446px centred. */}
       <div className="relative mx-auto w-full max-w-[1280px] px-4 xl:min-h-[613px] xl:px-0">
         <motion.div
-          className="relative z-[1] mx-auto flex w-full max-w-[485px] flex-col items-center gap-[14px] text-center"
+          className="relative z-[1] mx-auto flex w-full max-w-[446px] flex-col items-center gap-[14px] text-center"
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.35 }}
@@ -110,28 +108,32 @@ export function About() {
           </h2>
 
           <div className="w-full font-[family-name:var(--font-geist-sans)] text-[16px] font-normal leading-6 text-[#1e1e1e]">
-            <p className="mb-6 text-pretty">
-              Hi! My name is Lavi. It’s lovely to meet you!
-            </p>
+            <p className="mb-6 text-pretty">Hi! My name is Lavi. It’s lovely to meet you!</p>
             <p className="mb-6 text-pretty">
               I am based in New York City and have been for the last eight years. In many ways, New
               York has taught me the most important lessons of my adulthood.
             </p>
             <p className="mb-6 text-pretty">
-              In tandem with being a full-time designer, I am passively studying to become a{" "}
-              <Accent>sommelier</Accent> (for those who know the exam types, I am studying for the
-              CMS). Wine, for me, is a bridge to the thing I love most: people.
+              In tandem with being a full-time designer, I am passively studying to become a
+              sommelier (for those who know the exam types, I am studying for the CMS). Wine, for
+              me, is a bridge to the thing I love most: people.
             </p>
             <p className="mb-6 text-pretty">
               To that point, my career choices and hobbies share my love for people. I jump at the
               chance at using my education, skills, and curiosity to make someone’s day just 1%
               better.
             </p>
-            <p className="text-pretty">
+            <p className="mb-6 text-pretty">
               On any given day, you’re likely to find me at a museum or a gallery. If I’m not there,
-              I’m probably at my favourite coffee and dessert spot in New York,{" "}
-              <Accent>Lysée</Accent>. And if I’m not there, then please email me and we can discuss
-              why you’re trying to find me.
+              I’m probably at my favourite coffee shop in New York, Land To Sea. And if I’m not
+              there, then please email me and we can discuss why you’re trying to find me.
+            </p>
+            <p className="text-pretty">
+              I am currently open for design work, both client-based or full-time. You can DM me on{" "}
+              <TextLink href={TWITTER} target="_blank" rel="noopener noreferrer">
+                Twitter
+              </TextLink>{" "}
+              or (preferably) <TextLink href={EMAIL}>email me</TextLink>.
             </p>
           </div>
 
