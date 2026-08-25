@@ -45,6 +45,26 @@ body {
   -webkit-transform-origin: right bottom;
 }
 
+.text-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.text-link:hover {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.text-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .font-serif-display {
   font-family: var(--font-apple-garamond), Georgia, "Times New Roman", serif;
   font-weight: 300;

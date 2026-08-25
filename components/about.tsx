@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 import { EMAIL } from "@/lib/site-copy";
 import { InstaxPhoto } from "./instax-photo";
+import { TextLink } from "./text-link";
 
 const PHOTOS = {
   hey: {
@@ -115,8 +116,7 @@ export function About() {
 
           <div className="w-full font-[family-name:var(--font-geist-sans)] text-[16px] font-normal leading-6 text-[#1e1e1e]">
             <p className="mb-6 text-pretty">
-              Hi! My name is Lavi (I hope that if you’ve come this far, you’ve caught onto that).
-              It’s lovely to meet you!
+              Hi! My name is Lavi. It’s lovely to meet you!
             </p>
             <p className="mb-6 text-pretty">
               I am based in New York City and have been for the last eight years. In many ways, New
@@ -139,13 +139,10 @@ export function About() {
               why you’re trying to find me.
             </p>
             <p className="text-pretty">
-              I am currently open for design work, both client-based or full-time. You can DM me on
-              Twitter (X) or{" "}
-              <a href={EMAIL} className="text-[#002fa7] underline-offset-2 hover:underline">
-                email me
-              </a>
-              . If you’re curious for my answer on willingness to relocate,{" "}
-              <Accent>click here</Accent>.
+              I am currently open for design work, both client-based or full-time. You can DM me on{" "}
+              <Accent>Twitter</Accent> or (preferably){" "}
+              <TextLink href={EMAIL}>email me</TextLink>. If you’re curious for my answer on
+              willingness to relocate, <Accent>click here</Accent>.
             </p>
           </div>
 

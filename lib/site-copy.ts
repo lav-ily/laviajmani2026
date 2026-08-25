@@ -1,6 +1,7 @@
 export const RESEARCH = {
   title: "Research",
   href: "https://32paces.tumblr.com/",
+  mediaSrc: "/videos/lavie.webm",
   tag: {
     year: "2015 — Present",
     name: "La Vie",
