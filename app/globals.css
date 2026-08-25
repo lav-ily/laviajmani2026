@@ -13,10 +13,9 @@
   --color-caption: #666666;
 
   --nav-to-viewport-bottom: calc(2.125rem + env(safe-area-inset-bottom, 0px));
-  --nav-bar-height: 3.5rem;
-  --page-pad-below-content: calc(
-    var(--nav-bar-height) + var(--nav-to-viewport-bottom) + 0.25rem
-  );
+  --nav-bar-height: 5rem;
+  --nav-scroll-offset: calc(var(--nav-bar-height) + env(safe-area-inset-top, 0px));
+  --page-pad-below-content: calc(env(safe-area-inset-bottom, 0px) + 1rem);
 }
 
 @theme inline {

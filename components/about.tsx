@@ -4,9 +4,8 @@ import type { ReactNode } from "react";
 
 import { motion } from "framer-motion";
 
-import { EMAIL } from "@/lib/site-copy";
 import { InstaxPhoto } from "./instax-photo";
-import { TextLink } from "./text-link";
+import { MobileInstaxStack } from "./mobile-instax-stack";
 
 const PHOTOS = {
   hey: {
@@ -95,7 +94,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="flex min-h-[100svh] w-full scroll-mt-0 items-center justify-center"
+      className="flex w-full scroll-mt-[var(--nav-scroll-offset)] mb-[174px] max-[799px]:py-12 max-[799px]:items-start"
     >
       {/* Figma `625:17130` — 1280×613 canvas, copy at x=397.5 (485px centred). */}
       <div className="relative mx-auto w-full max-w-[1280px] px-4 xl:min-h-[613px] xl:px-0">
@@ -106,10 +105,6 @@ export function About() {
           viewport={{ once: true, amount: 0.35 }}
           transition={COPY_TRANSITION}
         >
-          <div className="my-6 flex w-full justify-center xl:hidden">
-            <InstaxPhoto {...PHOTOS.hey} rotate={DESKTOP_INSTAX.hey.rotate} />
-          </div>
-
           <h2 className="m-0 w-full font-serif-display text-[20px] text-[#1e1e1e]">
             About
           </h2>
@@ -128,26 +123,20 @@ export function About() {
               CMS). Wine, for me, is a bridge to the thing I love most: people.
             </p>
             <p className="mb-6 text-pretty">
-              To that point, my career choices and hobbies share my love for <Accent>people</Accent>
-              . I jump at the chance at using my education, skills, and curiosity to make someone’s
-              day just 1% better.
+              To that point, my career choices and hobbies share my love for people. I jump at the
+              chance at using my education, skills, and curiosity to make someone’s day just 1%
+              better.
             </p>
-            <p className="mb-6 text-pretty">
+            <p className="text-pretty">
               On any given day, you’re likely to find me at a museum or a gallery. If I’m not there,
               I’m probably at my favourite coffee and dessert spot in New York,{" "}
               <Accent>Lysée</Accent>. And if I’m not there, then please email me and we can discuss
               why you’re trying to find me.
             </p>
-            <p className="text-pretty">
-              I am currently open for design work, both client-based or full-time. You can DM me on{" "}
-              <Accent>Twitter</Accent> or (preferably){" "}
-              <TextLink href={EMAIL}>email me</TextLink>. If you’re curious for my answer on
-              willingness to relocate, <Accent>click here</Accent>.
-            </p>
           </div>
 
-          <div className="mb-6 mt-10 flex w-full justify-center xl:hidden">
-            <InstaxPhoto {...PHOTOS.seoul} rotate={DESKTOP_INSTAX.seoul.rotate} />
+          <div className="hidden w-full max-[799px]:block max-[799px]:origin-top max-[799px]:scale-[min(1,calc((100vw-2rem)/362))]">
+            <MobileInstaxStack photos={[PHOTOS.hey, PHOTOS.seoul]} />
           </div>
         </motion.div>
 
