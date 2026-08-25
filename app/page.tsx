@@ -14,12 +14,12 @@ export default function Home() {
     <div className="min-h-screen overflow-x-hidden bg-[#f9faff] text-[#1e1e1e]">
       <RefinementBanner />
       <div className={`mx-auto flex w-full flex-col ${SECTION_GAP}`}>
-        <div
-          className={`mx-auto flex w-full max-w-[1280px] flex-col items-center ${SECTION_GAP} md:px-0`}
-        >
+        <div className="mx-auto flex w-full max-w-[1280px] flex-col items-center md:px-0">
           <Hero />
-          <WorkGallery />
-          <Research />
+          <div className={`flex w-full flex-col items-center ${SECTION_GAP}`}>
+            <WorkGallery />
+            <Research />
+          </div>
         </div>
         <About />
         <ANote />
