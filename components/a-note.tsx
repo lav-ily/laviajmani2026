@@ -1,32 +1,21 @@
 import { JOSH_PUCKETT, NOTE, PUGSON } from "@/lib/site-copy";
+import { TextLink } from "./text-link";
 
 function withHandles(text: string) {
   const parts = text.split(/(@pugson|@joshpuckett)/g);
   return parts.map((part, i) => {
     if (part === "@pugson") {
       return (
-        <a
-          key={`${part}-${i}`}
-          href={PUGSON}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline-offset-2 hover:underline"
-        >
+        <TextLink key={`${part}-${i}`} href={PUGSON} target="_blank" rel="noopener noreferrer">
           {part}
-        </a>
+        </TextLink>
       );
     }
     if (part === "@joshpuckett") {
       return (
-        <a
-          key={`${part}-${i}`}
-          href={JOSH_PUCKETT}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline-offset-2 hover:underline"
-        >
+        <TextLink key={`${part}-${i}`} href={JOSH_PUCKETT} target="_blank" rel="noopener noreferrer">
           {part}
-        </a>
+        </TextLink>
       );
     }
     return <span key={`${part.slice(0, 12)}-${i}`}>{part}</span>;

@@ -61,10 +61,26 @@ export function WorkVideo({ src }: { src: string }) {
         className={`absolute ${CONTROL_INSET} z-10 flex items-center gap-1.5`}
         onPointerDown={(event) => event.stopPropagation()}
       >
-        <button type="button" onClick={pause} aria-label="Pause video" className={CONTROL_BTN}>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
+            pause();
+          }}
+          aria-label="Pause video"
+          className={CONTROL_BTN}
+        >
           Pause
         </button>
-        <button type="button" onClick={restart} aria-label="Restart video" className={CONTROL_BTN}>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
+            restart();
+          }}
+          aria-label="Restart video"
+          className={CONTROL_BTN}
+        >
           Restart
         </button>
       </div>
