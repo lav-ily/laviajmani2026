@@ -26,9 +26,7 @@ export const workItems: WorkItem[] = [
     name: "Dispo",
     role: "Product Designer",
     layout: "half",
-    variant: "video",
-    mediaSrc: "/videos/dispo.webm",
-    mediaAlt: "Dispo mobile product interface",
+    inProgress: true,
   },
   {
     year: "2025",
