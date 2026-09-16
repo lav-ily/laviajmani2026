@@ -83,7 +83,7 @@ function CardMedia({
     );
   }
 
-  if (isWide && item.variant === "video" && item.mediaSrc) {
+  if (item.variant === "video" && item.mediaSrc) {
     return <WorkVideo src={item.mediaSrc} />;
   }
 
