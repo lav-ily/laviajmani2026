@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #f9faff;
+  --color-bg: #ffffff;
+  --color-grid-panel: #f5f5f2;
+  --color-nav-tab-active: #e4e4e4;
+  --color-nav-tab-inactive: #cacaca;
+
+  --font-body-family: var(--font-matter);
   --color-text: #1e1e1e;
   --color-white: #ffffff;
   --color-card: #e4e4e4;
@@ -16,12 +21,28 @@
   --nav-bar-height: 5rem;
   --nav-scroll-offset: calc(var(--nav-bar-height) + env(safe-area-inset-top, 0px));
   --page-pad-below-content: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+
+  /**
+   * Figma `78:144` — intro 611px + square grid 1117px (1728 total). The grid is always
+   * `100svh` tall and hugs the right edge; its width is the slot, and the intro takes the rest.
+   * When the intro needs its minimum width, tiles grow taller than they are wide.
+   */
+  --intro-min-width: 380px;
+  --kelly-grid-design-size: 1117px;
+  --kelly-grid-slot: min(100svh, calc(100vw - var(--intro-min-width)));
+  --intro-column-width: calc(100vw - var(--kelly-grid-slot));
+  /** 118px at the 611px design width; the 316px copy block keeps its width. */
+  --intro-pad-left: clamp(24px, calc((var(--intro-column-width) - 316px) * 0.4), 118px);
 }
+
+/** Intro beside the grid; below this the grid stacks under the intro. */
+@custom-variant split (@media (min-width: 840px));
 
 @theme inline {
   --color-background: var(--color-bg);
   --color-foreground: var(--color-text);
   --font-sans: var(--font-geist-sans);
+  --font-body: var(--font-body-family), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -34,7 +55,6 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding-bottom: var(--page-pad-below-content);
 }
 
 .grecaptcha-badge {
@@ -70,6 +90,26 @@ body {
   font-style: italic;
 }
 
+.font-ogg {
+  font-family: var(--font-ogg), Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/** Product UI typefaces inside case study samples; SF Pro resolves to the system font on Apple devices. */
+.font-sf {
+  font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+.font-sf-rounded {
+  font-family: "SF Pro Rounded", ui-rounded, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+.font-inter {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
 .font-hero-serif {
   font-family: var(--font-apple-garamond), Georgia, "Times New Roman", serif;
   font-weight: 300;
@@ -81,4 +121,34 @@ body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-weight: 300;
   line-height: normal;
+}
+
+@media (max-width: 839.98px) {
+  :root {
+    --kelly-grid-slot: 100vw;
+  }
+}
+
+/**
+ * Tablet and up: render the grid 1117px wide (and as tall as the host's aspect needs),
+ * then scale it uniformly to fill the host.
+ */
+@media (min-width: 768px) {
+  /* Positioned by its utilities (relative, or sticky when split), anchoring the inner layer. */
+  .kelly-grid-scale-host {
+    overflow: hidden;
+  }
+
+  .kelly-grid-scale-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--kelly-grid-design-size);
+    height: var(--kelly-grid-inner-height, var(--kelly-grid-design-size));
+    transform-origin: top left;
+    /* `--kelly-grid-scale` is measured in JS; the calc fallback needs typed length division. */
+    transform: scale(
+      var(--kelly-grid-scale, calc(var(--kelly-grid-slot) / var(--kelly-grid-design-size)))
+    );
+  }
 }
