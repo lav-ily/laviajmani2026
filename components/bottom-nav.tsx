@@ -1,98 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
+export type NavId = "case-studies" | "research" | "about";
 
-import { scrollToSection } from "@/lib/scroll-to-section";
-
-type NavId = "research" | "about" | "work";
-
-const items: ReadonlyArray<{
-  id: NavId;
-  href: string;
-  label: string;
-}> = [
-  { id: "about", href: "#about", label: "About" },
-  { id: "work", href: "#work", label: "Work" },
-  { id: "research", href: "#research", label: "Research" },
+const items: ReadonlyArray<{ id: NavId; label: string }> = [
+  { id: "case-studies", label: "Case Studies" },
+  { id: "research", label: "Research" },
+  { id: "about", label: "About" },
 ];
 
-const BTN =
-  "inline-block origin-center font-[family-name:var(--font-geist-sans)] shrink-0 px-0 py-1 text-[16px] font-normal leading-normal no-underline " +
-  "whitespace-nowrap transition-[color,transform] duration-200 ease-out hover:scale-105 active:scale-95 " +
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
-  "focus-visible:outline-[rgba(0,0,0,0.25)]";
+const TAB =
+  "flex h-full flex-1 items-center justify-center rounded-[38px] px-4 py-1.5 font-body text-[14px] leading-normal whitespace-nowrap " +
+  "backdrop-blur-[15px] transition-colors duration-200 ease-out md:w-[140px] md:flex-none md:text-[16px] " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(0,0,0,0.25)]";
 
-const BTN_ACTIVE = "text-[#1e1e1e]";
-const BTN_INACTIVE = "text-[#696969] hover:text-[#565656]";
+const TAB_ACTIVE = "bg-[var(--color-nav-tab-active)] text-[var(--color-nav-label)]";
+const TAB_INACTIVE = "text-[var(--color-nav-tab-inactive)] hover:text-[var(--color-nav-label)]";
 
-export function BottomNav() {
-  const [active, setActive] = useState<NavId>("about");
+type BottomNavProps = {
+  active: NavId | null;
+  onSelect: (id: NavId | null) => void;
+};
 
-  useEffect(() => {
-    const sections = items
-      .map((item) => document.getElementById(item.id))
-      .filter((el): el is HTMLElement => el != null);
-
-    if (sections.length === 0) return;
-
-    const syncActive = () => {
-      const marker = window.scrollY + window.innerHeight * 0.35;
-      let current: NavId = "about";
-
-      for (const item of items) {
-        const section = document.getElementById(item.id);
-        if (section && section.offsetTop <= marker) {
-          current = item.id;
-        }
-      }
-
-      setActive(current);
-    };
-
-    syncActive();
-    window.addEventListener("scroll", syncActive, { passive: true });
-    window.addEventListener("resize", syncActive);
-
-    const observer = new IntersectionObserver(
-      () => syncActive(),
-      { rootMargin: "-20% 0px -55% 0px", threshold: [0, 0.1, 0.25, 0.5] },
-    );
-
-    for (const section of sections) observer.observe(section);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", syncActive);
-      window.removeEventListener("resize", syncActive);
-    };
-  }, []);
-
+/** Figma `112:25` — floating pill over the bottom of the color grid. */
+export function BottomNav({ active, onSelect }: BottomNavProps) {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-none fixed top-0 right-0 left-0 z-[100] isolate h-[calc(var(--nav-bar-height)+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] [transform:translateZ(0)]"
+      className="absolute bottom-3 left-1/2 flex h-12 w-[calc(100%-24px)] max-w-[474px] -translate-x-1/2 items-center gap-2 rounded-[44px] bg-white px-2.5 py-2 drop-shadow-[4px_4px_8px_rgba(33,33,33,0.16)] backdrop-blur-[20px] md:bottom-[49px] md:h-14 md:w-[474px] md:gap-4"
     >
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[rgba(249,250,255,0.55)] backdrop-blur-[20px] backdrop-saturate-150 [-webkit-backdrop-filter:blur(20px)_saturate(150%)]"
-      />
-
-      <div className="pointer-events-auto relative flex h-[var(--nav-bar-height)] items-center justify-end gap-6 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1.5rem,env(safe-area-inset-right,0px))]">
-        {items.map((item) => (
-          <a
+      {items.map((item) => {
+        const isActive = item.id === active;
+        return (
+          <button
             key={item.id}
-            href={item.href}
-            aria-current={item.id === active ? "page" : undefined}
-            className={`${BTN} ${item.id === active ? BTN_ACTIVE : BTN_INACTIVE}`}
-            onClick={(event) => {
-              event.preventDefault();
-              scrollToSection(item.id);
-              window.history.pushState(null, "", item.href);
-            }}
+            type="button"
+            aria-pressed={isActive}
+            className={`${TAB} ${isActive ? TAB_ACTIVE : TAB_INACTIVE}`}
+            onClick={() => onSelect(isActive ? null : item.id)}
           >
             {item.label}
-          </a>
-        ))}
-      </div>
+          </button>
+        );
+      })}
     </nav>
   );
 }

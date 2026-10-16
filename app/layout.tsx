@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
@@ -24,6 +24,15 @@ const geistMono = Geist_Mono({
   preload: true,
 });
 
+/** Product UI in case study samples (Hopin desktop). */
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+  preload: false,
+});
+
 const appleGaramond = localFont({
   src: "../public/fonts/AppleGaramond-LightItalic.woff2",
   weight: "300",
@@ -32,6 +41,39 @@ const appleGaramond = localFont({
   display: "swap",
   preload: true,
   adjustFontFallback: "Times New Roman",
+});
+
+const oggItalic = localFont({
+  src: "../public/fonts/ogg/Ogg-Italic.otf",
+  weight: "400",
+  style: "italic",
+  variable: "--font-ogg",
+  display: "swap",
+  preload: false,
+  adjustFontFallback: "Times New Roman",
+});
+
+const matter = localFont({
+  src: [
+    {
+      path: "../public/fonts/matter/Matter-Light.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/matter/Matter-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/matter/Matter-SemiBold.otf",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-matter",
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -55,7 +97,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${appleGaramond.variable} antialiased`}
+      className={`${matter.variable} ${geist.variable} ${geistMono.variable} ${appleGaramond.variable} ${oggItalic.variable} ${inter.variable} antialiased`}
     >
       <body>
         {children}
