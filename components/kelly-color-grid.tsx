@@ -1,9 +1,11 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import type { CaseStudySelectPayload } from "@/components/case-study-panel";
 import { BottomNav, type NavId } from "@/components/bottom-nav";
+import { useGridLayout } from "@/components/grid-layout-context";
 import {
   CASE_STUDY_CELL_FILL_S,
   CASE_STUDY_GAP_FILL_S,
@@ -14,18 +16,12 @@ import {
   gridSlotDelta,
   gridTranslate,
   GRID_GAP_PX,
-  LOGO_ORIGIN_INDEX,
   logoShuffleDelay,
   tetrisAxisTransition,
   tetrisExitAxisTransition,
   TILE_DIM_DURATION_S,
 } from "@/lib/kelly-grid-motion";
-import {
-  CASE_STUDY_CELLS,
-  DEFAULT_CELLS,
-  GRID_SIZE,
-  type GridCell,
-} from "@/lib/kelly-color-grid";
+import type { GridCell, GridLayout } from "@/lib/kelly-color-grid";
 
 type LogoCellData = Extract<GridCell, { kind: "logo" }>;
 
@@ -43,8 +39,8 @@ function tileOpacity(dimmed: boolean): number {
   return dimmed ? 0.4 : 1;
 }
 
-function baseCellAt(index: number, showCaseStudies: boolean): GridCell {
-  const cell = (showCaseStudies ? CASE_STUDY_CELLS : DEFAULT_CELLS)[index];
+function baseCellAt(layout: GridLayout, index: number, showCaseStudies: boolean): GridCell {
+  const cell = (showCaseStudies ? layout.caseStudyCells : layout.defaultCells)[index];
   if (cell.kind === "logo") {
     return { kind: "tile", color: cell.color };
   }
@@ -63,11 +59,14 @@ function TileCell({
   colorFill?: ColorFillState;
 }) {
   const reducedMotion = useReducedMotion();
+  const layout = useGridLayout();
   const baseColor = cell.kind === "empty" ? PANEL_BG : cell.color;
   const filling = colorFill !== undefined;
   const inCellPhase = filling && colorFill.phase === "cells";
   const targetColor = filling ? colorFill.color : baseColor;
-  const fillDelay = inCellPhase ? caseStudyFillCellDelay(colorFill.originIndex, index) : 0;
+  const fillDelay = inCellPhase
+    ? caseStudyFillCellDelay(layout, colorFill.originIndex, index)
+    : 0;
   const dimmedOpacity = tileOpacity(dimmed);
 
   return (
@@ -126,11 +125,13 @@ function LogoCell({
   index,
   onCaseStudySelect,
   transitionActive,
+  playEntry,
 }: {
   cell: LogoCellData;
   index: number;
   onCaseStudySelect?: (payload: CaseStudySelectPayload) => void;
   transitionActive: boolean;
+  playEntry: boolean;
 }) {
   return (
     <TetrisEntryButton
@@ -138,6 +139,7 @@ function LogoCell({
       index={index}
       onCaseStudySelect={onCaseStudySelect}
       transitionActive={transitionActive}
+      playEntry={playEntry}
       className="relative size-full overflow-hidden [container-type:size]"
     >
       <LogoMark cell={cell} />
@@ -151,6 +153,7 @@ function TetrisEntryButton({
   index,
   onCaseStudySelect,
   transitionActive,
+  playEntry,
   className,
   children,
 }: {
@@ -158,12 +161,15 @@ function TetrisEntryButton({
   index: number;
   onCaseStudySelect?: (payload: CaseStudySelectPayload) => void;
   transitionActive: boolean;
+  /** False when remounting for a new layout mid-session, so logos don't slide in again. */
+  playEntry: boolean;
   className: string;
   children: React.ReactNode;
 }) {
   const reducedMotion = useReducedMotion();
-  const origin = LOGO_ORIGIN_INDEX[cell.slug] ?? index;
-  const delta = gridSlotDelta(origin, index);
+  const layout = useGridLayout();
+  const origin = layout.logoOrigins[cell.slug] ?? index;
+  const delta = gridSlotDelta(layout, origin, index);
   const start = gridTranslate(delta.col, delta.row);
   const delay = reducedMotion ? 0 : logoShuffleDelay(cell.slug);
 
@@ -185,7 +191,7 @@ function TetrisEntryButton({
         });
       }}
       whileHover={reducedMotion || transitionActive ? undefined : { scale: CASE_STUDY_HOVER_SCALE }}
-      initial={reducedMotion ? false : { x: start.x, y: start.y, opacity: 1 }}
+      initial={reducedMotion || !playEntry ? false : { x: start.x, y: start.y, opacity: 1 }}
       animate={{
         x: "0px",
         y: "0px",
@@ -219,9 +225,6 @@ function TetrisEntryButton({
   );
 }
 
-const CASE_STUDY_LOGOS = CASE_STUDY_CELLS.flatMap((cell, index) =>
-  cell.kind === "logo" ? [{ index, cell }] : [],
-);
 type KellyColorGridProps = {
   active: NavId | null;
   onSelect: (id: NavId | null) => void;
@@ -240,8 +243,28 @@ export function KellyColorGrid({
   onGapFillComplete,
 }: KellyColorGridProps) {
   const reducedMotion = useReducedMotion();
+  const layout = useGridLayout();
   const showCaseStudies = active === "case-studies";
   const rippleActive = colorFill !== undefined;
+  const logoByIndex = useMemo(
+    () =>
+      new Map(
+        layout.caseStudyCells.flatMap((cell, index) =>
+          cell.kind === "logo" ? [[index, cell] as const] : [],
+        ),
+      ),
+    [layout],
+  );
+
+  // Logos slide in only when Case Studies opens, not when a resize swaps the layout under them.
+  const [entryLayoutId, setEntryLayoutId] = useState(layout.id);
+  const [prevShowCaseStudies, setPrevShowCaseStudies] = useState(showCaseStudies);
+  if (prevShowCaseStudies !== showCaseStudies) {
+    setPrevShowCaseStudies(showCaseStudies);
+    if (showCaseStudies) setEntryLayoutId(layout.id);
+  }
+  const playLogoEntry = entryLayoutId === layout.id;
+  const gridTemplateColumns = `repeat(${layout.cols}, minmax(0, 1fr))`;
   const closingGaps = colorFill?.phase === "gaps";
   const gap = closingGaps ? 0 : GRID_GAP_PX;
   const gapPx = `${gap}px`;
@@ -275,17 +298,18 @@ export function KellyColorGrid({
           onGapFillComplete?.();
         }}
       >
-        {Array.from({ length: GRID_SIZE }, (_, rowIndex) => (
+        {Array.from({ length: layout.rows }, (_, rowIndex) => (
           <motion.div
-            key={rowIndex}
-            className="grid min-h-0 flex-1 grid-cols-7"
+            key={`${layout.id}-${rowIndex}`}
+            className="grid min-h-0 flex-1"
+            style={{ gridTemplateColumns }}
             initial={false}
             animate={{ columnGap: gapPx, rowGap: gapPx }}
             transition={gapTransition}
           >
-            {Array.from({ length: GRID_SIZE }, (_, colIndex) => {
-              const index = rowIndex * GRID_SIZE + colIndex;
-              const cell = baseCellAt(index, showCaseStudies);
+            {Array.from({ length: layout.cols }, (_, colIndex) => {
+              const index = rowIndex * layout.cols + colIndex;
+              const cell = baseCellAt(layout, index, showCaseStudies);
               const dimmed = showCaseStudies && cell.kind === "tile";
               return (
                 <TileCell
@@ -302,38 +326,39 @@ export function KellyColorGrid({
       </motion.div>
 
       <motion.div
+        key={layout.id}
         className="pointer-events-none absolute inset-0 flex flex-col"
         initial={false}
         animate={{ rowGap: gapPx, columnGap: gapPx }}
         transition={gapTransition}
       >
-        {Array.from({ length: GRID_SIZE }, (_, rowIndex) => (
+        {Array.from({ length: layout.rows }, (_, rowIndex) => (
           <motion.div
             key={rowIndex}
-            className="grid min-h-0 flex-1 grid-cols-7"
+            className="grid min-h-0 flex-1"
+            style={{ gridTemplateColumns }}
             initial={false}
             animate={{ columnGap: gapPx, rowGap: gapPx }}
             transition={gapTransition}
           >
-            {Array.from({ length: GRID_SIZE }, (_, colIndex) => {
-              const index = rowIndex * GRID_SIZE + colIndex;
-              const logoEntry = CASE_STUDY_LOGOS.find((logo) => logo.index === index);
+            {Array.from({ length: layout.cols }, (_, colIndex) => {
+              const index = rowIndex * layout.cols + colIndex;
+              const logo = logoByIndex.get(index);
               return (
                 <div
                   key={index}
-                  className={
-                    logoEntry ? "pointer-events-auto size-full min-h-0" : "size-full min-h-0"
-                  }
-                  aria-hidden={!logoEntry}
+                  className={logo ? "pointer-events-auto size-full min-h-0" : "size-full min-h-0"}
+                  aria-hidden={!logo}
                 >
                   <AnimatePresence>
-                    {showCaseStudies && logoEntry ? (
+                    {showCaseStudies && logo ? (
                       <LogoCell
-                        key={logoEntry.cell.slug}
-                        cell={logoEntry.cell}
+                        key={logo.slug}
+                        cell={logo}
                         index={index}
                         onCaseStudySelect={onCaseStudySelect}
                         transitionActive={rippleActive}
+                        playEntry={playLogoEntry}
                       />
                     ) : null}
                   </AnimatePresence>

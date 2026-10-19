@@ -1,4 +1,7 @@
+"use client";
+
 import { BrushReveal } from "@/components/brush-reveal";
+import { useGridLayout } from "@/components/grid-layout-context";
 import type { CaseStudy } from "@/lib/case-studies/types";
 import { textBrushSchedule } from "@/lib/kelly-grid-motion";
 
@@ -11,9 +14,11 @@ type CaseStudyIntroPanelProps = {
 
 /** Figma `78:96` / `78:97` — case study intro; 316px copy block. */
 export function CaseStudyIntroPanel({ study, originIndex, onClose }: CaseStudyIntroPanelProps) {
+  const layout = useGridLayout();
   const paragraphs = typeof study.body === "string" ? [study.body] : study.body;
   // Title, location, each paragraph, then the back link.
   const { delays, duration } = textBrushSchedule(
+    layout,
     paragraphs.length + 3,
     originIndex,
     study.mediaLayout,

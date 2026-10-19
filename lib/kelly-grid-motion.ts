@@ -1,4 +1,4 @@
-import { GRID_SIZE } from "@/lib/kelly-color-grid";
+import type { GridDims } from "@/lib/kelly-color-grid";
 
 /** Matches `gap-[6px]` on the color grid. */
 export const GRID_GAP_PX = 6;
@@ -47,90 +47,99 @@ export const CASE_STUDY_HOVER_S = 0.22;
 const BENTO_COLS = 2;
 const BENTO_ROWS = 3;
 
-/** Anchor each 2×3 bento cell to a point on the 7×7 Kelly grid for ripple distance. */
-export function bentoBlockAnchorOnGrid(blockIndex: number): { row: number; col: number } {
+/** Anchor each 2×3 bento cell to a point on the Kelly grid for ripple distance. */
+export function bentoBlockAnchorOnGrid(dims: GridDims, blockIndex: number): { row: number; col: number } {
   const bRow = Math.floor(blockIndex / BENTO_COLS);
   const bCol = blockIndex % BENTO_COLS;
   const row = Math.min(
-    GRID_SIZE - 1,
-    Math.floor(((bRow + 0.5) * GRID_SIZE) / BENTO_ROWS),
+    dims.rows - 1,
+    Math.floor(((bRow + 0.5) * dims.rows) / BENTO_ROWS),
   );
   const col = Math.min(
-    GRID_SIZE - 1,
-    Math.floor(((bCol + 0.5) * GRID_SIZE) / BENTO_COLS),
+    dims.cols - 1,
+    Math.floor(((bCol + 0.5) * dims.cols) / BENTO_COLS),
   );
   return { row, col };
 }
 
-export function caseStudyBentoFillDistance(originIndex: number, blockIndex: number): number {
-  const origin = gridCellRowCol(originIndex);
-  const anchor = bentoBlockAnchorOnGrid(blockIndex);
+export function caseStudyBentoFillDistance(
+  dims: GridDims,
+  originIndex: number,
+  blockIndex: number,
+): number {
+  const origin = gridCellRowCol(dims, originIndex);
+  const anchor = bentoBlockAnchorOnGrid(dims, blockIndex);
   return Math.max(Math.abs(origin.row - anchor.row), Math.abs(origin.col - anchor.col));
 }
 
-export function caseStudyBentoFillDelay(originIndex: number, blockIndex: number): number {
-  return caseStudyBentoFillDistance(originIndex, blockIndex) * CASE_STUDY_BENTO_STAGGER_S;
+export function caseStudyBentoFillDelay(dims: GridDims, originIndex: number, blockIndex: number): number {
+  return caseStudyBentoFillDistance(dims, originIndex, blockIndex) * CASE_STUDY_BENTO_STAGGER_S;
 }
 
 /** When the last bento block finishes fading in. */
-export function caseStudyBentoRippleEndS(originIndex: number): number {
+export function caseStudyBentoRippleEndS(dims: GridDims, originIndex: number): number {
   let maxDist = 0;
   for (let i = 0; i < BENTO_BLOCK_COUNT; i += 1) {
-    maxDist = Math.max(maxDist, caseStudyBentoFillDistance(originIndex, i));
+    maxDist = Math.max(maxDist, caseStudyBentoFillDistance(dims, originIndex, i));
   }
   return maxDist * CASE_STUDY_BENTO_STAGGER_S + CASE_STUDY_BENTO_FADE_S;
 }
 
 /** Figma `78:128` — single hero frame ripples from the grid center. */
-const HERO_MEDIA_CENTER_INDEX =
-  Math.floor(GRID_SIZE / 2) * GRID_SIZE + Math.floor(GRID_SIZE / 2);
-
-export function caseStudyHeroFillDelay(originIndex: number): number {
-  return caseStudyFillDistance(originIndex, HERO_MEDIA_CENTER_INDEX) * CASE_STUDY_BENTO_STAGGER_S;
+function heroMediaCenterIndex(dims: GridDims): number {
+  return Math.floor(dims.rows / 2) * dims.cols + Math.floor(dims.cols / 2);
 }
 
-export function caseStudyHeroRippleEndS(originIndex: number): number {
-  return caseStudyHeroFillDelay(originIndex) + CASE_STUDY_BENTO_FADE_S;
+export function caseStudyHeroFillDelay(dims: GridDims, originIndex: number): number {
+  return (
+    caseStudyFillDistance(dims, originIndex, heroMediaCenterIndex(dims)) * CASE_STUDY_BENTO_STAGGER_S
+  );
+}
+
+export function caseStudyHeroRippleEndS(dims: GridDims, originIndex: number): number {
+  return caseStudyHeroFillDelay(dims, originIndex) + CASE_STUDY_BENTO_FADE_S;
 }
 
 export function panelContentRippleEndS(
+  dims: GridDims,
   originIndex: number,
   mediaLayout: "bento" | "hero" | undefined,
 ): number {
   return mediaLayout === "hero"
-    ? caseStudyHeroRippleEndS(originIndex)
-    : caseStudyBentoRippleEndS(originIndex);
+    ? caseStudyHeroRippleEndS(dims, originIndex)
+    : caseStudyBentoRippleEndS(dims, originIndex);
 }
 
-export function caseStudyFillDistance(originIndex: number, cellIndex: number): number {
-  const origin = gridCellRowCol(originIndex);
-  const cell = gridCellRowCol(cellIndex);
+export function caseStudyFillDistance(dims: GridDims, originIndex: number, cellIndex: number): number {
+  const origin = gridCellRowCol(dims, originIndex);
+  const cell = gridCellRowCol(dims, cellIndex);
   return Math.max(Math.abs(origin.row - cell.row), Math.abs(origin.col - cell.col));
 }
 
-export function caseStudyFillCellDelay(originIndex: number, cellIndex: number): number {
-  return caseStudyFillDistance(originIndex, cellIndex) * CASE_STUDY_CELL_FILL_STAGGER_S;
+export function caseStudyFillCellDelay(dims: GridDims, originIndex: number, cellIndex: number): number {
+  return caseStudyFillDistance(dims, originIndex, cellIndex) * CASE_STUDY_CELL_FILL_STAGGER_S;
 }
 
 /** When the last cell finishes its colour transition. */
-export function caseStudyFillCellsEndS(originIndex: number): number {
+export function caseStudyFillCellsEndS(dims: GridDims, originIndex: number): number {
   let maxDist = 0;
-  for (let i = 0; i < GRID_SIZE * GRID_SIZE; i += 1) {
-    maxDist = Math.max(maxDist, caseStudyFillDistance(originIndex, i));
+  for (let i = 0; i < dims.cols * dims.rows; i += 1) {
+    maxDist = Math.max(maxDist, caseStudyFillDistance(dims, originIndex, i));
   }
   return maxDist * CASE_STUDY_CELL_FILL_STAGGER_S + CASE_STUDY_CELL_FILL_S;
 }
 
 /** Seconds from the click until the page's media has fully faded in. */
 export function panelOpenSequenceEndS(
+  dims: GridDims,
   originIndex: number,
   mediaLayout: "bento" | "hero" | undefined,
 ): number {
   return (
     CASE_STUDY_RIPPLE_HOLD_S +
-    caseStudyFillCellsEndS(originIndex) +
+    caseStudyFillCellsEndS(dims, originIndex) +
     CASE_STUDY_GAP_FILL_S +
-    panelContentRippleEndS(originIndex, mediaLayout)
+    panelContentRippleEndS(dims, originIndex, mediaLayout)
   );
 }
 
@@ -145,12 +154,13 @@ const TEXT_BRUSH_TAIL_S = 0.08;
  * as the media does, so the text never lands before the media.
  */
 export function textBrushSchedule(
+  dims: GridDims,
   count: number,
   originIndex: number,
   mediaLayout: "bento" | "hero" | undefined,
 ): { delays: number[]; duration: number } {
   const start = CASE_STUDY_RIPPLE_HOLD_S;
-  const window = panelOpenSequenceEndS(originIndex, mediaLayout) + TEXT_BRUSH_TAIL_S - start;
+  const window = panelOpenSequenceEndS(dims, originIndex, mediaLayout) + TEXT_BRUSH_TAIL_S - start;
   const duration = Math.min(TEXT_BRUSH_STROKE_S, window * 0.5);
   const stagger = count > 1 ? (window - duration) / (count - 1) : 0;
   return {
@@ -159,18 +169,13 @@ export function textBrushSchedule(
   };
 }
 
-export function gridCellRowCol(index: number): { row: number; col: number } {
-  return { row: Math.floor(index / GRID_SIZE), col: index % GRID_SIZE };
+/** Rows clamp so an index kept from a larger layout (after a resize) still lands on the grid. */
+export function gridCellRowCol(dims: GridDims, index: number): { row: number; col: number } {
+  return {
+    row: Math.min(Math.floor(index / dims.cols), dims.rows - 1),
+    col: index % dims.cols,
+  };
 }
-
-/** Default-grid indices each logo “shuffles” from when Case Studies opens. */
-export const LOGO_ORIGIN_INDEX: Record<string, number> = {
-  hopin: 16,
-  dispo: 42,
-  "peachy-patients": 20,
-  delphi: 28,
-  bullpen: 9,
-};
 
 const STAGGER_ORDER = ["hopin", "dispo", "peachy-patients", "delphi", "bullpen"] as const;
 
@@ -180,18 +185,20 @@ export function logoShuffleDelay(slug: string): number {
 }
 
 /** Signed column/row delta from target slot back to origin (grid steps). */
-export function gridSlotDelta(originIndex: number, targetIndex: number): { col: number; row: number } {
-  const originCol = originIndex % GRID_SIZE;
-  const originRow = Math.floor(originIndex / GRID_SIZE);
-  const targetCol = targetIndex % GRID_SIZE;
-  const targetRow = Math.floor(targetIndex / GRID_SIZE);
+export function gridSlotDelta(
+  dims: GridDims,
+  originIndex: number,
+  targetIndex: number,
+): { col: number; row: number } {
+  const origin = gridCellRowCol(dims, originIndex);
+  const target = gridCellRowCol(dims, targetIndex);
   return {
-    col: originCol - targetCol,
-    row: originRow - targetRow,
+    col: origin.col - target.col,
+    row: origin.row - target.row,
   };
 }
 
-/** Transform from the target cell to another slot on the 7×7 grid (one cell = 100% + gap). */
+/** Transform from the target cell to another slot on the grid (one cell = 100% + gap). */
 export function gridTranslate(col: number, row: number): { x: string; y: string } {
   const x = col === 0 ? "0px" : `calc(${col} * (100% + ${GRID_GAP_PX}px))`;
   const y = row === 0 ? "0px" : `calc(${row} * (100% + ${GRID_GAP_PX}px))`;

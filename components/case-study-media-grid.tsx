@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 import { CASE_STUDY_SAMPLES } from "@/components/case-study-samples";
 import { SampleStage } from "@/components/case-study-samples/sample-stage";
+import { useGridLayout } from "@/components/grid-layout-context";
 import {
   BENTO_BLOCK_COUNT,
   CASE_STUDY_BENTO_FADE_S,
@@ -34,7 +35,8 @@ function BentoBlock({
   Sample?: ComponentType;
 }) {
   const reducedMotion = useReducedMotion();
-  const delay = reducedMotion ? 0 : caseStudyBentoFillDelay(originIndex, blockIndex);
+  const layout = useGridLayout();
+  const delay = reducedMotion ? 0 : caseStudyBentoFillDelay(layout, originIndex, blockIndex);
 
   return (
     <motion.div
