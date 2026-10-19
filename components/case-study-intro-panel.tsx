@@ -33,7 +33,7 @@ export function CaseStudyIntroPanel({ study, originIndex, onClose }: CaseStudyIn
             typeof study.body === "string" ? "max-w-[316px]" : "max-w-[354px]"
           }`}
         >
-          <div className="flex w-full flex-col gap-1 text-[20px] whitespace-nowrap">
+          <div className="flex w-full flex-col text-[20px] whitespace-nowrap">
             <BrushReveal {...stroke(0)}>
               <h1 className="font-semibold">{study.title}</h1>
             </BrushReveal>

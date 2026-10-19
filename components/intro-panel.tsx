@@ -87,7 +87,7 @@ export function IntroPanel({ animateEntry = false, onEntryComplete }: IntroPanel
           onComplete={onEntryComplete}
           className="flex w-full max-w-[354px] flex-col gap-[18px] font-body leading-normal text-black"
         >
-          <div className="flex w-full flex-col gap-1 text-[20px]">
+          <div className="flex w-full flex-col text-[20px]">
             <h1 className="w-full font-semibold">{ABOUT.name}</h1>
             <p className="w-full font-light">{ABOUT.location}</p>
           </div>
