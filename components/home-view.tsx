@@ -143,8 +143,8 @@ export function HomeView() {
 
   const activeTabPage = active ? TAB_PAGES[active] : undefined;
 
-  const handleTileOpen = (slug: string) => {
-    setPanel((current) => ({ ...current, slug }));
+  const handleTileOpen = (slug: string, cellIndex: number) => {
+    setPanel((current) => ({ ...current, slug, originIndex: cellIndex }));
     navigate(caseStudyRoute(slug));
   };
 
