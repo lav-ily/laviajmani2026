@@ -13,6 +13,7 @@ import {
   CASE_STUDY_HOVER_SCALE,
   CASE_STUDY_MOTION_EASE,
   caseStudyFillCellDelay,
+  gridEntryRevealDelay,
   gridSlotDelta,
   gridTranslate,
   GRID_GAP_PX,
@@ -25,6 +26,12 @@ import type { GridCell, GridLayout } from "@/lib/kelly-color-grid";
 
 type LogoCellData = Extract<GridCell, { kind: "logo" }>;
 
+/**
+ * Landing entry: `pending` holds every tile at the panel color until the grid is measured and
+ * shown; `playing` fills them in from the top-right corner. Omit once the entry has played.
+ */
+export type GridEntryReveal = "pending" | "playing";
+
 export type ColorFillState = {
   color: string;
   originIndex: number;
@@ -33,7 +40,7 @@ export type ColorFillState = {
 };
 
 /** Hex mirror of `--color-grid-panel`; Framer Motion can't interpolate CSS variables. */
-const PANEL_BG = "#f5f5f2";
+export const PANEL_BG = "#f5f5f2";
 
 function tileOpacity(dimmed: boolean): number {
   return dimmed ? 0.4 : 1;
@@ -52,21 +59,27 @@ function TileCell({
   index,
   dimmed,
   colorFill,
+  entryReveal,
 }: {
   cell: GridCell;
   index: number;
   dimmed: boolean;
   colorFill?: ColorFillState;
+  entryReveal?: GridEntryReveal;
 }) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
   const baseColor = cell.kind === "empty" ? PANEL_BG : cell.color;
   const filling = colorFill !== undefined;
   const inCellPhase = filling && colorFill.phase === "cells";
-  const targetColor = filling ? colorFill.color : baseColor;
+  const targetColor = entryReveal === "pending" ? PANEL_BG : filling ? colorFill.color : baseColor;
   const fillDelay = inCellPhase
     ? caseStudyFillCellDelay(layout, colorFill.originIndex, index)
-    : 0;
+    : entryReveal === "playing"
+      ? gridEntryRevealDelay(layout, index)
+      : 0;
+  const colorDuration =
+    inCellPhase || entryReveal !== undefined ? CASE_STUDY_CELL_FILL_S : TILE_DIM_DURATION_S * 0.85;
   const dimmedOpacity = tileOpacity(dimmed);
 
   return (
@@ -77,7 +90,9 @@ function TileCell({
       initial={
         inCellPhase
           ? { backgroundColor: baseColor, opacity: dimmedOpacity }
-          : false
+          : entryReveal !== undefined
+            ? { backgroundColor: PANEL_BG, opacity: dimmedOpacity }
+            : false
       }
       animate={{
         backgroundColor: targetColor,
@@ -90,7 +105,7 @@ function TileCell({
           ease: CASE_STUDY_MOTION_EASE,
         },
         backgroundColor: {
-          duration: reducedMotion ? 0 : inCellPhase ? CASE_STUDY_CELL_FILL_S : TILE_DIM_DURATION_S * 0.85,
+          duration: reducedMotion ? 0 : colorDuration,
           delay: reducedMotion ? 0 : fillDelay,
           ease: CASE_STUDY_MOTION_EASE,
         },
@@ -232,6 +247,7 @@ type KellyColorGridProps = {
   hideNav?: boolean;
   colorFill?: ColorFillState;
   onGapFillComplete?: () => void;
+  entryReveal?: GridEntryReveal;
 };
 
 export function KellyColorGrid({
@@ -241,6 +257,7 @@ export function KellyColorGrid({
   hideNav = false,
   colorFill,
   onGapFillComplete,
+  entryReveal,
 }: KellyColorGridProps) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
@@ -318,6 +335,7 @@ export function KellyColorGrid({
                   cell={cell}
                   dimmed={dimmed}
                   colorFill={colorFill}
+                  entryReveal={entryReveal}
                 />
               );
             })}
