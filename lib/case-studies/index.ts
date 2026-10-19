@@ -11,6 +11,8 @@ const CASE_STUDIES: Record<string, CaseStudy> = Object.fromEntries(
   ),
 );
 
+export const CASE_STUDY_SLUGS: ReadonlyArray<string> = Object.keys(CASE_STUDIES);
+
 export function getCaseStudy(slug: string): CaseStudy | undefined {
   return CASE_STUDIES[slug];
 }

@@ -6,12 +6,16 @@ import { motion, useReducedMotion } from "framer-motion";
 import { CASE_STUDY_SAMPLES } from "@/components/case-study-samples";
 import { SampleStage } from "@/components/case-study-samples/sample-stage";
 import { useGridLayout } from "@/components/grid-layout-context";
+import { MOBILE_CARDS_HEIGHT_PX } from "@/components/mobile-case-study-cards";
 import {
   BENTO_BLOCK_COUNT,
   CASE_STUDY_BENTO_FADE_S,
   CASE_STUDY_MOTION_EASE,
   caseStudyBentoFillDelay,
 } from "@/lib/kelly-grid-motion";
+
+/** Mobile: the solid card block grows from the stack's height to fit the 1×6 column of samples. */
+const MOBILE_GROW_S = 0.6;
 
 type CaseStudyMediaGridProps = {
   slug: string;
@@ -69,7 +73,35 @@ export function CaseStudyMediaGrid({
   originIndex,
   fillGeneration,
 }: CaseStudyMediaGridProps) {
+  const reducedMotion = useReducedMotion();
+  const layout = useGridLayout();
   const samples = CASE_STUDY_SAMPLES[slug];
+  const blocks = Array.from({ length: BENTO_BLOCK_COUNT }, (_, index) => (
+    <BentoBlock
+      key={index}
+      blockIndex={index}
+      originIndex={originIndex}
+      fillGeneration={fillGeneration}
+      blockColor={blockColor}
+      Sample={samples?.[index]}
+    />
+  ));
+
+  if (layout.id === "cards") {
+    return (
+      <motion.section
+        aria-label="Case study media"
+        className="relative z-30 overflow-hidden"
+        style={{ backgroundColor: panelColor }}
+        initial={reducedMotion ? false : { height: MOBILE_CARDS_HEIGHT_PX }}
+        animate={{ height: "auto" }}
+        transition={{ duration: reducedMotion ? 0 : MOBILE_GROW_S, ease: CASE_STUDY_MOTION_EASE }}
+      >
+        <div className="grid grid-cols-1 gap-[5px] p-[5px] [&>*]:aspect-[534.5/351]">{blocks}</div>
+      </motion.section>
+    );
+  }
+
   return (
     <section
       aria-label="Case study media"
@@ -77,16 +109,7 @@ export function CaseStudyMediaGrid({
       style={{ backgroundColor: panelColor }}
     >
       <div className="absolute inset-[1.432%] grid grid-cols-2 grid-rows-3 gap-[1.475%]">
-        {Array.from({ length: BENTO_BLOCK_COUNT }, (_, index) => (
-          <BentoBlock
-            key={index}
-            blockIndex={index}
-            originIndex={originIndex}
-            fillGeneration={fillGeneration}
-            blockColor={blockColor}
-            Sample={samples?.[index]}
-          />
-        ))}
+        {blocks}
       </div>
     </section>
   );

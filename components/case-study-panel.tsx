@@ -13,6 +13,10 @@ import {
   type GridEntryReveal,
 } from "@/components/kelly-color-grid";
 import {
+  MOBILE_CARDS_HEIGHT_PX,
+  MobileCaseStudyCards,
+} from "@/components/mobile-case-study-cards";
+import {
   CASE_STUDY_GAP_FILL_S,
   CASE_STUDY_RIPPLE_HOLD_S,
   caseStudyFillCellsEndS,
@@ -43,8 +47,11 @@ type CaseStudyPanelProps = {
   active: NavId | null;
   onNavSelect: (id: NavId | null) => void;
   onOpen: (slug: string, cellIndex: number) => void;
-  /** Start the open sequence on mount from this cell (About tab), without a tile click. */
-  autoOpen?: { slug: string; cellIndex: number };
+  /**
+   * Start the open sequence on mount from this cell, without a tile click (tab pages, history
+   * navigation). `instant` lands on the open page directly, e.g. when loading its URL.
+   */
+  autoOpen?: { slug: string; cellIndex: number; instant?: boolean };
   entryReveal?: GridEntryReveal;
 };
 
@@ -76,6 +83,7 @@ export function CaseStudyPanel({
 }: CaseStudyPanelProps) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
+  const skipAutoOpenSequence = Boolean(reducedMotion || autoOpen?.instant);
   const [open, setOpen] = useState<OpenState | null>(() => {
     const content = autoOpen ? getPanelContent(autoOpen.slug) : undefined;
     if (!autoOpen || !content) return null;
@@ -84,10 +92,10 @@ export function CaseStudyPanel({
       cellIndex: autoOpen.cellIndex,
       color: content.panelColor,
       fillGeneration: 1,
-      stage: reducedMotion ? "content" : "hold",
+      stage: skipAutoOpenSequence ? "content" : "hold",
     };
   });
-  const [gridMounted, setGridMounted] = useState(() => !(autoOpen && reducedMotion));
+  const [gridMounted, setGridMounted] = useState(() => !(autoOpen && skipAutoOpenSequence));
   const fillGenerationRef = useRef(autoOpen ? 1 : 0);
 
   const study = open ? getPanelContent(open.slug) : undefined;
@@ -148,18 +156,32 @@ export function CaseStudyPanel({
       : undefined;
 
   return (
-    <section className="relative size-full overflow-hidden bg-[var(--color-grid-panel)]">
+    <section
+      className={`relative w-full overflow-hidden bg-[var(--color-grid-panel)] ${
+        layout.id === "cards" ? "" : "h-full"
+      }`}
+      style={layout.id === "cards" ? { minHeight: MOBILE_CARDS_HEIGHT_PX } : undefined}
+    >
       {open === null || gridMounted ? (
         <div className="absolute inset-0 z-10">
-          <KellyColorGrid
-            active={active}
-            onSelect={onNavSelect}
-            onCaseStudySelect={handleCaseStudySelect}
-            hideNav={open !== null}
-            colorFill={colorFill}
-            onGapFillComplete={handleGapFillComplete}
-            entryReveal={entryReveal}
-          />
+          {layout.id === "cards" ? (
+            <MobileCaseStudyCards
+              onCaseStudySelect={handleCaseStudySelect}
+              colorFill={colorFill}
+              onGapFillComplete={handleGapFillComplete}
+              entryReveal={entryReveal}
+            />
+          ) : (
+            <KellyColorGrid
+              active={active}
+              onSelect={onNavSelect}
+              onCaseStudySelect={handleCaseStudySelect}
+              hideNav={open !== null}
+              colorFill={colorFill}
+              onGapFillComplete={handleGapFillComplete}
+              entryReveal={entryReveal}
+            />
+          )}
         </div>
       ) : null}
 

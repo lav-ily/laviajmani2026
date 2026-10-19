@@ -44,20 +44,25 @@ export const CASE_STUDY_MOTION_EASE = [0.32, 0, 0.18, 1] as const;
 export const CASE_STUDY_HOVER_SCALE = 1.06;
 export const CASE_STUDY_HOVER_S = 0.22;
 
-const BENTO_COLS = 2;
-const BENTO_ROWS = 3;
+/** Samples sit in a 2×3 bento beside the grid, and stack 1×6 under the single-column mobile cards. */
+export function bentoGridDims(dims: GridDims): GridDims {
+  return dims.cols === 1
+    ? { cols: 1, rows: BENTO_BLOCK_COUNT }
+    : { cols: 2, rows: BENTO_BLOCK_COUNT / 2 };
+}
 
-/** Anchor each 2×3 bento cell to a point on the Kelly grid for ripple distance. */
+/** Anchor each bento cell to a point on the Kelly grid for ripple distance. */
 export function bentoBlockAnchorOnGrid(dims: GridDims, blockIndex: number): { row: number; col: number } {
-  const bRow = Math.floor(blockIndex / BENTO_COLS);
-  const bCol = blockIndex % BENTO_COLS;
+  const bento = bentoGridDims(dims);
+  const bRow = Math.floor(blockIndex / bento.cols);
+  const bCol = blockIndex % bento.cols;
   const row = Math.min(
     dims.rows - 1,
-    Math.floor(((bRow + 0.5) * dims.rows) / BENTO_ROWS),
+    Math.floor(((bRow + 0.5) * dims.rows) / bento.rows),
   );
   const col = Math.min(
     dims.cols - 1,
-    Math.floor(((bCol + 0.5) * dims.cols) / BENTO_COLS),
+    Math.floor(((bCol + 0.5) * dims.cols) / bento.cols),
   );
   return { row, col };
 }
@@ -145,46 +150,6 @@ export function gridEntryRevealDelay(dims: GridDims, index: number): number {
 /** When the bottom-left tile finishes filling in. */
 export function gridEntryRevealEndS(dims: GridDims): number {
   return (dims.rows - 1 + dims.cols - 1) * GRID_ENTRY_STAGGER_S + CASE_STUDY_CELL_FILL_S;
-}
-
-/** Seconds from the click until the page's media has fully faded in. */
-export function panelOpenSequenceEndS(
-  dims: GridDims,
-  originIndex: number,
-  mediaLayout: "bento" | "hero" | undefined,
-): number {
-  return (
-    CASE_STUDY_RIPPLE_HOLD_S +
-    caseStudyFillCellsEndS(dims, originIndex) +
-    CASE_STUDY_GAP_FILL_S +
-    panelContentRippleEndS(dims, originIndex, mediaLayout)
-  );
-}
-
-/** Each block of page copy takes this long to brush on. */
-export const TEXT_BRUSH_STROKE_S = 0.75;
-
-/** The panel's stage timers run slightly behind the computed sequence; finish the copy after them. */
-const TEXT_BRUSH_TAIL_S = 0.08;
-
-/**
- * Brush-on timing for `count` blocks of page copy: starts with the ripple and finishes
- * as the media does, so the text never lands before the media.
- */
-export function textBrushSchedule(
-  dims: GridDims,
-  count: number,
-  originIndex: number,
-  mediaLayout: "bento" | "hero" | undefined,
-): { delays: number[]; duration: number } {
-  const start = CASE_STUDY_RIPPLE_HOLD_S;
-  const window = panelOpenSequenceEndS(dims, originIndex, mediaLayout) + TEXT_BRUSH_TAIL_S - start;
-  const duration = Math.min(TEXT_BRUSH_STROKE_S, window * 0.5);
-  const stagger = count > 1 ? (window - duration) / (count - 1) : 0;
-  return {
-    delays: Array.from({ length: count }, (_, i) => start + i * stagger),
-    duration,
-  };
 }
 
 /** Rows clamp so an index kept from a larger layout (after a resize) still lands on the grid. */

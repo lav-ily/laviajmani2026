@@ -1,7 +1,8 @@
 /**
  * Figma `112:111` — grid after Ellsworth Kelly's *Colors for a Large Wall*. Each breakpoint
- * has its own layout (7×7 on desktop down to 4×4 on mobile). Cells are listed row by row;
- * logo sizes are percentages of a cell.
+ * has its own layout (7×7 on desktop down to 5×6 on tablet); mobile swaps the grid for a
+ * single column of case-study cards. Cells are listed row by row; logo sizes are percentages
+ * of a cell.
  */
 
 const ASSETS = "/images/kelly-grid";
@@ -19,10 +20,9 @@ export type GridLogo = {
   layers: ReadonlyArray<LogoLayer>;
 };
 
-export type GridCell =
-  | { kind: "tile"; color: string }
-  | { kind: "logo"; color: string; label: string; slug: string; logo: GridLogo }
-  | { kind: "empty" };
+export type LogoGridCell = { kind: "logo"; color: string; label: string; slug: string; logo: GridLogo };
+
+export type GridCell = { kind: "tile"; color: string } | LogoGridCell | { kind: "empty" };
 
 const tile = (color: string): GridCell => ({ kind: "tile", color });
 
@@ -33,7 +33,7 @@ const YELLOW = tile("#f0c430");
 const SKY = tile("#3da5d9");
 
 /** Default-grid cobalt tile (`78:162`); opens Hopin case study (`77:14`). */
-const HOPIN: GridCell = {
+const HOPIN: LogoGridCell = {
   kind: "logo",
   color: "#0047ab",
   label: "Hopin",
@@ -45,7 +45,7 @@ const HOPIN: GridCell = {
   },
 };
 
-const DISPO: GridCell = {
+const DISPO: LogoGridCell = {
   kind: "logo",
   color: "#3cb371",
   label: "Dispo",
@@ -53,7 +53,7 @@ const DISPO: GridCell = {
   logo: { width: 100, height: 100, layers: [{ src: `${ASSETS}/cell-star.svg` }] },
 };
 
-const PEACHY_PATIENTS: GridCell = {
+const PEACHY_PATIENTS: LogoGridCell = {
   kind: "logo",
   color: "#ee8470",
   label: "Peachy Patients",
@@ -68,7 +68,7 @@ const PEACHY_PATIENTS: GridCell = {
   },
 };
 
-const DELPHI: GridCell = {
+const DELPHI: LogoGridCell = {
   kind: "logo",
   color: "#1a1a1a",
   label: "Delphi Digital",
@@ -76,7 +76,7 @@ const DELPHI: GridCell = {
   logo: { width: 35.62, height: 35.62, layers: [{ src: `${ASSETS}/delphi-ident.svg` }] },
 };
 
-const BULLPEN: GridCell = {
+const BULLPEN: LogoGridCell = {
   kind: "logo",
   color: "#004646",
   label: "Bullpen",
@@ -111,7 +111,7 @@ const CASE_STUDY_CELLS_7X7: ReadonlyArray<GridCell> = [
 
 export type GridDims = { cols: number; rows: number };
 
-export type GridLayoutId = "7x7" | "6x7" | "5x7" | "5x6" | "4x4";
+export type GridLayoutId = "7x7" | "6x7" | "5x7" | "5x6" | "cards";
 
 export type GridLayout = GridDims & {
   id: GridLayoutId;
@@ -161,12 +161,27 @@ function cropLayout(id: GridLayoutId, col: number, row: number, cols: number, ro
   };
 }
 
+/**
+ * Figma `220:12665` — mobile has no Kelly grid: the case studies stack as a 1×5 column of cards,
+ * which reuses the grid's open sequence (ripple, gutters close, media fades in).
+ */
+const MOBILE_CARDS: ReadonlyArray<LogoGridCell> = [DELPHI, DISPO, HOPIN, BULLPEN, PEACHY_PATIENTS];
+
+const LAYOUT_CARDS: GridLayout = {
+  id: "cards",
+  cols: 1,
+  rows: MOBILE_CARDS.length,
+  defaultCells: MOBILE_CARDS.map((card) => tile(card.color)),
+  caseStudyCells: MOBILE_CARDS,
+  logoOrigins: Object.fromEntries(MOBILE_CARDS.map((card, index) => [card.slug, index])),
+};
+
 export const GRID_LAYOUTS: Record<GridLayoutId, GridLayout> = {
   "7x7": LAYOUT_7X7,
   "6x7": cropLayout("6x7", 0, 0, 6, 7),
   "5x7": cropLayout("5x7", 1, 0, 5, 7),
   "5x6": cropLayout("5x6", 1, 1, 5, 6),
-  "4x4": cropLayout("4x4", 1, 2, 4, 4),
+  cards: LAYOUT_CARDS,
 };
 
 export const DEFAULT_GRID_LAYOUT = LAYOUT_7X7;
@@ -184,7 +199,7 @@ export function pickGridLayout({
   hostWidth: number;
   viewportWidth: number;
 }): GridLayout {
-  if (viewportWidth < MOBILE_MAX_VIEWPORT_PX) return GRID_LAYOUTS["4x4"];
+  if (viewportWidth < MOBILE_MAX_VIEWPORT_PX) return GRID_LAYOUTS.cards;
   if (viewportWidth < TABLET_MAX_VIEWPORT_PX) return GRID_LAYOUTS["5x6"];
   if (hostWidth >= HOST_7_COLS_MIN_PX) return GRID_LAYOUTS["7x7"];
   if (hostWidth >= HOST_6_COLS_MIN_PX) return GRID_LAYOUTS["6x7"];

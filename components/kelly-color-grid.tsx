@@ -40,7 +40,7 @@ export type ColorFillState = {
 };
 
 /** Hex mirror of `--color-grid-panel`; Framer Motion can't interpolate CSS variables. */
-const PANEL_BG = "#f5f5f2";
+export const PANEL_BG = "#f5f5f2";
 
 function tileOpacity(dimmed: boolean): number {
   return dimmed ? 0.4 : 1;
