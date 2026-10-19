@@ -6,6 +6,8 @@ export type CaseStudy = {
   location: string;
   /** One paragraph, or several. */
   body: string | ReadonlyArray<string>;
+  /** Phrases in `body` rendered as links, keyed by the exact text. */
+  bodyLinks?: Readonly<Record<string, string>>;
   /** Figma `78:77` panel fill when this study is open. */
   panelColor: string;
   /** Media placeholder fill on the open panel (bento block or hero frame). */

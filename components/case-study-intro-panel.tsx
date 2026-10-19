@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { TextEntry } from "@/components/text-entry";
 import type { CaseStudy } from "@/lib/case-studies/types";
 
@@ -7,6 +9,31 @@ type CaseStudyIntroPanelProps = {
   study: CaseStudy;
   onClose: () => void;
 };
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function withLinks(paragraph: string, links: CaseStudy["bodyLinks"]): ReactNode {
+  const phrases = links ? Object.keys(links) : [];
+  if (phrases.length === 0) return paragraph;
+  const pattern = new RegExp(`\\b(${phrases.map(escapeRegExp).join("|")})\\b`);
+  return paragraph.split(pattern).map((part, index) => {
+    const href = index % 2 === 1 ? links?.[part] : undefined;
+    if (!href) return part;
+    const external = href.startsWith("http");
+    return (
+      <a
+        key={index}
+        href={href}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        className="underline underline-offset-2 hover:text-[var(--color-nav-label)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e1e1e]"
+      >
+        {part}
+      </a>
+    );
+  });
+}
 
 /** Figma `78:96` / `78:97` — case study intro; 316px copy block. */
 export function CaseStudyIntroPanel({ study, onClose }: CaseStudyIntroPanelProps) {
@@ -31,7 +58,7 @@ export function CaseStudyIntroPanel({ study, onClose }: CaseStudyIntroPanelProps
           >
             {paragraphs.map((paragraph) => (
               <p key={paragraph} className="w-full">
-                {paragraph}
+                {withLinks(paragraph, study.bodyLinks)}
               </p>
             ))}
           </div>

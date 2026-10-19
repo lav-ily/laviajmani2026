@@ -5,7 +5,7 @@ export const laVieResearch: CaseStudy = {
   slug: "la-vie",
   title: "La Vie",
   location: "Childhood Bedroom, 2015—",
-  body: "Descriptions coming soon.",
+  body: "La Vie is Lavi’s personal archive of visual references, hosted on Tumblr. She has maintained this archive since high school, marking just over a decade of research and archiving.",
   panelColor: "#002fa7",
   blockColor: "#0858c9",
   mediaLayout: "hero",
