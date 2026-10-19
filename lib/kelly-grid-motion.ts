@@ -129,6 +129,24 @@ export function caseStudyFillCellsEndS(dims: GridDims, originIndex: number): num
   return maxDist * CASE_STUDY_CELL_FILL_STAGGER_S + CASE_STUDY_CELL_FILL_S;
 }
 
+/** Landing entry: diagonal step between tiles as the reveal sweeps from the top-right corner. */
+export const GRID_ENTRY_STAGGER_S = 0.065;
+
+/** Steps along the top-right → bottom-left diagonal, so the wavefront runs perpendicular to it. */
+function gridEntrySteps(dims: GridDims, index: number): number {
+  const { row, col } = gridCellRowCol(dims, index);
+  return row + (dims.cols - 1 - col);
+}
+
+export function gridEntryRevealDelay(dims: GridDims, index: number): number {
+  return gridEntrySteps(dims, index) * GRID_ENTRY_STAGGER_S;
+}
+
+/** When the bottom-left tile finishes filling in. */
+export function gridEntryRevealEndS(dims: GridDims): number {
+  return (dims.rows - 1 + dims.cols - 1) * GRID_ENTRY_STAGGER_S + CASE_STUDY_CELL_FILL_S;
+}
+
 /** Seconds from the click until the page's media has fully faded in. */
 export function panelOpenSequenceEndS(
   dims: GridDims,

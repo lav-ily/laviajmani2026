@@ -13,6 +13,7 @@ import {
   pickGridLayout,
   type GridLayout,
 } from "@/lib/kelly-color-grid";
+import { gridEntryRevealEndS } from "@/lib/kelly-grid-motion";
 import { getPanelContent } from "@/lib/panel-content";
 import { laVieResearch } from "@/lib/research/la-vie";
 
@@ -32,7 +33,18 @@ export function HomeView() {
   const [openOriginIndex, setOpenOriginIndex] = useState(0);
   const [gridLayout, setGridLayout] = useState<GridLayout>(DEFAULT_GRID_LAYOUT);
   const [gridMeasured, setGridMeasured] = useState(false);
+  const [introEntered, setIntroEntered] = useState(false);
+  const [gridRevealed, setGridRevealed] = useState(false);
   const gridHostRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!gridMeasured || gridRevealed) return;
+    const id = window.setTimeout(
+      () => setGridRevealed(true),
+      gridEntryRevealEndS(gridLayout) * 1000,
+    );
+    return () => window.clearTimeout(id);
+  }, [gridLayout, gridMeasured, gridRevealed]);
 
   useEffect(() => {
     const host = gridHostRef.current;
@@ -53,8 +65,10 @@ export function HomeView() {
   };
 
   const study = openCaseStudy ? getPanelContent(openCaseStudy) : undefined;
+  if (study && !introEntered) setIntroEntered(true);
 
   const handleNavSelect = (id: NavId | null) => {
+    setGridRevealed(true);
     if (id !== active) {
       resetCaseStudyPanel();
     }
@@ -95,7 +109,10 @@ export function HomeView() {
             />
           </div>
         ) : (
-          <IntroPanel />
+          <IntroPanel
+            animateEntry={!introEntered}
+            onEntryComplete={() => setIntroEntered(true)}
+          />
         )}
         <div
           ref={gridHostRef}
@@ -111,6 +128,7 @@ export function HomeView() {
             autoOpen={
               activeTabPage ? { slug: activeTabPage.slug, cellIndex: openOriginIndex } : undefined
             }
+            entryReveal={gridRevealed ? undefined : gridMeasured ? "playing" : "pending"}
           />
         </div>
       </main>

@@ -7,7 +7,11 @@ import type { NavId } from "@/components/bottom-nav";
 import { CaseStudyMediaGrid } from "@/components/case-study-media-grid";
 import { useGridLayout } from "@/components/grid-layout-context";
 import { PanelHeroMedia } from "@/components/panel-hero-media";
-import { KellyColorGrid, type ColorFillState } from "@/components/kelly-color-grid";
+import {
+  KellyColorGrid,
+  type ColorFillState,
+  type GridEntryReveal,
+} from "@/components/kelly-color-grid";
 import {
   CASE_STUDY_GAP_FILL_S,
   CASE_STUDY_RIPPLE_HOLD_S,
@@ -41,6 +45,7 @@ type CaseStudyPanelProps = {
   onOpen: (slug: string, cellIndex: number) => void;
   /** Start the open sequence on mount from this cell (About tab), without a tile click. */
   autoOpen?: { slug: string; cellIndex: number };
+  entryReveal?: GridEntryReveal;
 };
 
 function stageDurationMs(dims: GridDims, open: OpenState): number | null {
@@ -67,6 +72,7 @@ export function CaseStudyPanel({
   onNavSelect,
   onOpen,
   autoOpen,
+  entryReveal,
 }: CaseStudyPanelProps) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
@@ -152,6 +158,7 @@ export function CaseStudyPanel({
             hideNav={open !== null}
             colorFill={colorFill}
             onGapFillComplete={handleGapFillComplete}
+            entryReveal={entryReveal}
           />
         </div>
       ) : null}

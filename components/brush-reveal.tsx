@@ -11,15 +11,19 @@ type BrushRevealProps = {
   delay: number;
   duration: number;
   className?: string;
+  onComplete?: () => void;
   children: ReactNode;
 };
 
-/** Wipes its children on left to right, like a brush stroke. */
-export function BrushReveal({ delay, duration, className, children }: BrushRevealProps) {
+/**
+ * Wipes its children on left to right, like a brush stroke. Under reduced motion it stays a motion
+ * element for one instant pass, so server-rendered markup (starting masked) still resolves.
+ */
+export function BrushReveal({ delay, duration, className, onComplete, children }: BrushRevealProps) {
   const reducedMotion = useReducedMotion();
   const [done, setDone] = useState(false);
 
-  if (reducedMotion || done) {
+  if (done) {
     return <div className={className}>{children}</div>;
   }
 
@@ -38,8 +42,13 @@ export function BrushReveal({ delay, duration, className, children }: BrushRevea
       }}
       initial={{ "--brush-x": "100%" }}
       animate={{ "--brush-x": "0%" }}
-      transition={{ duration, delay, ease: [0.45, 0, 0.2, 1] }}
-      onAnimationComplete={() => setDone(true)}
+      transition={
+        reducedMotion ? { duration: 0 } : { duration, delay, ease: [0.45, 0, 0.2, 1] }
+      }
+      onAnimationComplete={() => {
+        setDone(true);
+        onComplete?.();
+      }}
     >
       {children}
     </motion.div>
