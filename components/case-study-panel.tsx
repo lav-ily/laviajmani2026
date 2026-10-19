@@ -5,6 +5,7 @@ import { useReducedMotion } from "framer-motion";
 
 import type { NavId } from "@/components/bottom-nav";
 import { CaseStudyMediaGrid } from "@/components/case-study-media-grid";
+import { useGridLayout } from "@/components/grid-layout-context";
 import { PanelHeroMedia } from "@/components/panel-hero-media";
 import { KellyColorGrid, type ColorFillState } from "@/components/kelly-color-grid";
 import {
@@ -13,6 +14,7 @@ import {
   caseStudyFillCellsEndS,
   panelContentRippleEndS,
 } from "@/lib/kelly-grid-motion";
+import type { GridDims } from "@/lib/kelly-color-grid";
 import { getPanelContent } from "@/lib/panel-content";
 
 export type CaseStudySelectPayload = {
@@ -41,12 +43,12 @@ type CaseStudyPanelProps = {
   autoOpen?: { slug: string; cellIndex: number };
 };
 
-function stageDurationMs(open: OpenState): number | null {
+function stageDurationMs(dims: GridDims, open: OpenState): number | null {
   switch (open.stage) {
     case "hold":
       return CASE_STUDY_RIPPLE_HOLD_S * 1000;
     case "fill-cells":
-      return caseStudyFillCellsEndS(open.cellIndex) * 1000;
+      return caseStudyFillCellsEndS(dims, open.cellIndex) * 1000;
     case "fill-gaps":
       return CASE_STUDY_GAP_FILL_S * 1000 + 32;
     case "content":
@@ -67,6 +69,7 @@ export function CaseStudyPanel({
   autoOpen,
 }: CaseStudyPanelProps) {
   const reducedMotion = useReducedMotion();
+  const layout = useGridLayout();
   const [open, setOpen] = useState<OpenState | null>(() => {
     const content = autoOpen ? getPanelContent(autoOpen.slug) : undefined;
     if (!autoOpen || !content) return null;
@@ -92,20 +95,20 @@ export function CaseStudyPanel({
 
   useEffect(() => {
     if (!open || reducedMotion) return;
-    const ms = stageDurationMs(open);
+    const ms = stageDurationMs(layout, open);
     if (ms === null) return;
     const id = window.setTimeout(() => advanceStage(open.stage), ms);
     return () => window.clearTimeout(id);
-  }, [advanceStage, open, reducedMotion]);
+  }, [advanceStage, layout, open, reducedMotion]);
 
   useEffect(() => {
     if (open?.stage !== "content" || !gridMounted) return;
     const ms = open
-      ? panelContentRippleEndS(open.cellIndex, study?.mediaLayout) * 1000 + 48
+      ? panelContentRippleEndS(layout, open.cellIndex, study?.mediaLayout) * 1000 + 48
       : 200;
     const id = window.setTimeout(() => setGridMounted(false), ms);
     return () => window.clearTimeout(id);
-  }, [gridMounted, open, study?.mediaLayout]);
+  }, [gridMounted, layout, open, study?.mediaLayout]);
 
   const handleGapFillComplete = useCallback(() => advanceStage("fill-gaps"), [advanceStage]);
 

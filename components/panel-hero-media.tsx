@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
+import { useGridLayout } from "@/components/grid-layout-context";
 import {
   CASE_STUDY_BENTO_FADE_S,
   CASE_STUDY_MOTION_EASE,
@@ -29,7 +30,8 @@ export function PanelHeroMedia({
   title,
 }: PanelHeroMediaProps) {
   const reducedMotion = useReducedMotion();
-  const delay = reducedMotion ? 0 : caseStudyHeroFillDelay(originIndex);
+  const layout = useGridLayout();
+  const delay = reducedMotion ? 0 : caseStudyHeroFillDelay(layout, originIndex);
 
   return (
     <section

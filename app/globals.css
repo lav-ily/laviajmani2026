@@ -28,7 +28,6 @@
    * When the intro needs its minimum width, tiles grow taller than they are wide.
    */
   --intro-min-width: 380px;
-  --kelly-grid-design-size: 1117px;
   --kelly-grid-slot: min(100svh, calc(100vw - var(--intro-min-width)));
   --intro-column-width: calc(100vw - var(--kelly-grid-slot));
   /** 118px at the 611px design width; the 316px copy block keeps its width. */
@@ -126,29 +125,5 @@ body {
 @media (max-width: 839.98px) {
   :root {
     --kelly-grid-slot: 100vw;
-  }
-}
-
-/**
- * Tablet and up: render the grid 1117px wide (and as tall as the host's aspect needs),
- * then scale it uniformly to fill the host.
- */
-@media (min-width: 768px) {
-  /* Positioned by its utilities (relative, or sticky when split), anchoring the inner layer. */
-  .kelly-grid-scale-host {
-    overflow: hidden;
-  }
-
-  .kelly-grid-scale-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--kelly-grid-design-size);
-    height: var(--kelly-grid-inner-height, var(--kelly-grid-design-size));
-    transform-origin: top left;
-    /* `--kelly-grid-scale` is measured in JS; the calc fallback needs typed length division. */
-    transform: scale(
-      var(--kelly-grid-scale, calc(var(--kelly-grid-slot) / var(--kelly-grid-design-size)))
-    );
   }
 }
