@@ -49,7 +49,7 @@ export function mediaBlockCount(mediaLayout: PanelMediaLayout | undefined): numb
 export const CASE_STUDY_MOTION_EASE = [0.32, 0, 0.18, 1] as const;
 
 /** Case-study tile zoom on hover. */
-export const CASE_STUDY_HOVER_SCALE = 1.06;
+export const CASE_STUDY_HOVER_SCALE = 1.03;
 export const CASE_STUDY_HOVER_S = 0.22;
 
 /** Samples sit in a two-column bento beside the grid, and stack in one column under the mobile cards. */
