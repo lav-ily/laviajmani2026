@@ -11,6 +11,7 @@ import { MobileMenu } from "@/components/mobile-menu";
 import {
   centralCellIndicesWithColor,
   DEFAULT_GRID_LAYOUT,
+  MOBILE_MAX_VIEWPORT_PX,
   pickGridLayout,
   type GridLayout,
 } from "@/lib/kelly-color-grid";
@@ -72,6 +73,23 @@ export function HomeView() {
     const path = pathFromRoute(next);
     if (path !== window.location.pathname) window.history.pushState(null, "", path);
   };
+
+  // Mobile: every page change, including back/forward, starts at the top of the new page.
+  const routePath = pathFromRoute(route);
+  const scrollToGridOnNavRef = useRef(false);
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+  }, []);
+  useEffect(() => {
+    const scrollToGrid = scrollToGridOnNavRef.current;
+    scrollToGridOnNavRef.current = false;
+    if (!window.matchMedia(`(max-width: ${MOBILE_MAX_VIEWPORT_PX - 1}px)`).matches) return;
+    if (scrollToGrid) {
+      gridHostRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, left: 0 });
+    }
+  }, [routePath]);
   const [gridLayout, setGridLayout] = useState<GridLayout>(DEFAULT_GRID_LAYOUT);
   const [gridMeasured, setGridMeasured] = useState(false);
   const [introEntered, setIntroEntered] = useState(false);
@@ -154,12 +172,16 @@ export function HomeView() {
 
   const handleMenuSelect = (id: NavId) => {
     if (id === "case-studies") {
-      if (study) handleIntroClose();
-      gridHostRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (study) {
+        scrollToGridOnNavRef.current = true;
+        handleIntroClose();
+      } else {
+        gridHostRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
       return;
     }
     if (id !== active) handleNavSelect(id);
-    window.scrollTo({ top: 0 });
+    else window.scrollTo({ top: 0 });
   };
 
   return (

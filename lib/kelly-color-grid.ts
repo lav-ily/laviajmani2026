@@ -187,7 +187,7 @@ export const GRID_LAYOUTS: Record<GridLayoutId, GridLayout> = {
 export const DEFAULT_GRID_LAYOUT = LAYOUT_7X7;
 
 /** Breakpoints for the layout ladder; host widths apply when the grid sits beside the intro. */
-const MOBILE_MAX_VIEWPORT_PX = 768;
+export const MOBILE_MAX_VIEWPORT_PX = 768;
 const TABLET_MAX_VIEWPORT_PX = 840;
 const HOST_7_COLS_MIN_PX = 900;
 const HOST_6_COLS_MIN_PX = 700;
