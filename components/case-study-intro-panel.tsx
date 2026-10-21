@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 
 import { TextEntry } from "@/components/text-entry";
+import { TextLink } from "@/components/text-link";
 import type { CaseStudy } from "@/lib/case-studies/types";
 
 type CaseStudyIntroPanelProps = {
@@ -23,14 +24,13 @@ function withLinks(paragraph: string, links: CaseStudy["bodyLinks"]): ReactNode 
     if (!href) return part;
     const external = href.startsWith("http");
     return (
-      <a
+      <TextLink
         key={index}
         href={href}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="underline underline-offset-2 hover:text-[var(--color-nav-label)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e1e1e]"
       >
         {part}
-      </a>
+      </TextLink>
     );
   });
 }
@@ -40,8 +40,8 @@ export function CaseStudyIntroPanel({ study, onClose }: CaseStudyIntroPanelProps
   const paragraphs = typeof study.body === "string" ? [study.body] : study.body;
 
   return (
-    <aside className="flex-1 bg-white max-md:flex-none split:min-w-0 split:min-h-svh">
-      <div className="px-6 pt-16 pb-12 max-md:px-[26px] max-md:py-6 split:px-0 split:pt-[121px] split:pb-0 split:pl-[var(--intro-pad-left)]">
+    <aside className="flex-1 bg-white max-md:w-full max-md:flex-none split:min-w-0 split:min-h-svh">
+      <div className="px-6 pt-16 pb-12 max-md:py-6 split:pt-[121px] split:pb-0 split:pl-[var(--intro-pad-left)]">
         <TextEntry
           className={`flex w-full flex-col gap-[18px] font-body leading-normal text-black max-md:gap-3 ${
             typeof study.body === "string" ? "max-w-[316px]" : "max-w-[354px]"
@@ -65,9 +65,10 @@ export function CaseStudyIntroPanel({ study, onClose }: CaseStudyIntroPanelProps
           <button
             type="button"
             onClick={onClose}
-            className="w-fit text-[16px] text-[var(--color-nav-label)] underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e1e1e]"
+            aria-label="Back to grid"
+            className="flex w-fit items-center justify-center bg-black p-[10px] text-[16px] leading-normal whitespace-nowrap text-white transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e1e1e]"
           >
-            Back to grid
+            Back
           </button>
         </TextEntry>
       </div>

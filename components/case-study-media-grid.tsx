@@ -11,6 +11,7 @@ import {
   BENTO_BLOCK_COUNT,
   CASE_STUDY_BENTO_FADE_S,
   CASE_STUDY_MOTION_EASE,
+  QUAD_BLOCK_COUNT,
   caseStudyBentoFillDelay,
 } from "@/lib/kelly-grid-motion";
 
@@ -23,16 +24,20 @@ type CaseStudyMediaGridProps = {
   blockColor: string;
   originIndex: number;
   fillGeneration: number;
+  /** `BENTO_BLOCK_COUNT` (2×3) or `QUAD_BLOCK_COUNT` (2×2). */
+  blockCount?: number;
 };
 
 function BentoBlock({
   blockIndex,
+  blockCount,
   originIndex,
   fillGeneration,
   blockColor,
   Sample,
 }: {
   blockIndex: number;
+  blockCount: number;
   originIndex: number;
   fillGeneration: number;
   blockColor: string;
@@ -40,7 +45,9 @@ function BentoBlock({
 }) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
-  const delay = reducedMotion ? 0 : caseStudyBentoFillDelay(layout, originIndex, blockIndex);
+  const delay = reducedMotion
+    ? 0
+    : caseStudyBentoFillDelay(layout, originIndex, blockIndex, blockCount);
 
   return (
     <motion.div
@@ -72,14 +79,16 @@ export function CaseStudyMediaGrid({
   blockColor,
   originIndex,
   fillGeneration,
+  blockCount = BENTO_BLOCK_COUNT,
 }: CaseStudyMediaGridProps) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
   const samples = CASE_STUDY_SAMPLES[slug];
-  const blocks = Array.from({ length: BENTO_BLOCK_COUNT }, (_, index) => (
+  const blocks = Array.from({ length: blockCount }, (_, index) => (
     <BentoBlock
       key={index}
       blockIndex={index}
+      blockCount={blockCount}
       originIndex={originIndex}
       fillGeneration={fillGeneration}
       blockColor={blockColor}
@@ -108,7 +117,11 @@ export function CaseStudyMediaGrid({
       className="absolute inset-0 z-30 overflow-hidden"
       style={{ backgroundColor: panelColor }}
     >
-      <div className="absolute inset-[1.432%] grid grid-cols-2 grid-rows-3 gap-[1.475%]">
+      <div
+        className={`absolute inset-[1.432%] grid grid-cols-2 gap-[1.475%] ${
+          blockCount === QUAD_BLOCK_COUNT ? "grid-rows-2" : "grid-rows-3"
+        }`}
+      >
         {blocks}
       </div>
     </section>

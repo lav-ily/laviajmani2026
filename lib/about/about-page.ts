@@ -7,7 +7,9 @@ export const aboutPage: CaseStudy = {
   title: ABOUT.name,
   location: ABOUT.location,
   body: [
-    "Lavi has been based in New York since 2018 and is permanently located in the city. She was born and raised in the US and is the eldest of three daughters. She is an avid listener of rap and hip-hop — her favorite artists include (but are not limited to) Nas, Tobe Nwigwe, and Gang Starr. She is studying for her Sommelier certification via the Court of Master Sommeliers. She is an avid patron of the arts, frequenting the many museums and galleries in New York, as well as the New York Philharmonic.",
+    "Lavi has been based in New York since 2018 and is permanently located in the city. She was born and raised on the East Coast and is the eldest of three daughters.",
+    "She is an avid listener of rap and hip-hop. She is studying for her Sommelier certification via the Court of Master Sommeliers.",
+    "An avid patron of the arts, she frequents the many museums and galleries of New York, as well as the New York Philharmonic.",
     "She is actively open to full-time product design opportunities in New York or remote. If you are interested, please reach out via email, Twitter, or LinkedIn.",
   ],
   bodyLinks: {
@@ -17,5 +19,5 @@ export const aboutPage: CaseStudy = {
   },
   panelColor: "#e4e4e4",
   blockColor: "#d2d2d2",
-  mediaLayout: "hero",
+  mediaLayout: "quad",
 };
