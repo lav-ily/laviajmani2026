@@ -12,8 +12,8 @@ type IntroPanelProps = {
 /** Figma `78:195` / `78:196` — intro column; same layout in every homepage state. */
 export function IntroPanel({ animateEntry = false, onEntryComplete }: IntroPanelProps) {
   return (
-    <aside className="flex-1 bg-white max-md:flex-none split:min-w-0 split:min-h-svh">
-      <div className="px-6 pt-16 pb-12 max-md:px-[26px] max-md:py-6 split:px-0 split:pt-[121px] split:pb-0 split:pl-[var(--intro-pad-left)]">
+    <aside className="flex-1 bg-white max-md:w-full max-md:flex-none split:min-w-0 split:min-h-svh">
+      <div className="px-6 pt-16 pb-12 max-md:py-6 split:pt-[121px] split:pb-0 split:pl-[var(--intro-pad-left)]">
         <TextEntry
           animate={animateEntry}
           onComplete={onEntryComplete}

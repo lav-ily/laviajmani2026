@@ -84,7 +84,7 @@ export function MobileMenu({ current, onSelect }: MobileMenuProps) {
                 </svg>
               </button>
             </div>
-            <TextEntry className="flex flex-col items-start gap-3 px-[26px] pt-6 font-body text-[20px] leading-normal text-black">
+            <TextEntry className="flex flex-col items-start gap-3 px-6 pt-6 font-body text-[20px] leading-normal text-black">
               {ITEMS.map((item) => (
                 <button
                   key={item.id}

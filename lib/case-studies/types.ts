@@ -1,4 +1,4 @@
-export type PanelMediaLayout = "bento" | "hero";
+export type PanelMediaLayout = "bento" | "hero" | "quad";
 
 export type CaseStudy = {
   slug: string;
@@ -12,7 +12,7 @@ export type CaseStudy = {
   panelColor: string;
   /** Media placeholder fill on the open panel (bento block or hero frame). */
   blockColor: string;
-  /** `hero` — Figma `78:128`; default is the 2×3 case study bento. */
+  /** `hero` — Figma `78:128`; `quad` — 2×2 bento; default is the 2×3 case study bento. */
   mediaLayout?: PanelMediaLayout;
   /** Optional asset inside the hero frame (`mediaLayout: "hero"`). */
   heroMediaSrc?: string;

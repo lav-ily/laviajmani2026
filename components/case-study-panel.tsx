@@ -20,6 +20,7 @@ import {
   CASE_STUDY_GAP_FILL_S,
   CASE_STUDY_RIPPLE_HOLD_S,
   caseStudyFillCellsEndS,
+  mediaBlockCount,
   panelContentRippleEndS,
 } from "@/lib/kelly-grid-motion";
 import type { GridDims } from "@/lib/kelly-color-grid";
@@ -202,6 +203,7 @@ export function CaseStudyPanel({
             blockColor={study.blockColor}
             originIndex={open.cellIndex}
             fillGeneration={open.fillGeneration}
+            blockCount={mediaBlockCount(study.mediaLayout)}
           />
         )
       ) : null}
