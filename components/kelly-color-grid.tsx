@@ -37,6 +37,11 @@ export type ColorFillState = {
   originIndex: number;
   phase: "cells" | "gaps";
   generation: number;
+  /**
+   * Color of the page being left when stepping between case studies: the grid starts as one solid
+   * block of it, opens its gutters while the new color ripples in, and never shows the logos.
+   */
+  from?: string;
 };
 
 /** Hex mirror of `--color-grid-panel`; Framer Motion can't interpolate CSS variables. */
@@ -89,7 +94,9 @@ function TileCell({
       className="size-full min-h-0"
       initial={
         inCellPhase
-          ? { backgroundColor: baseColor, opacity: dimmedOpacity }
+          ? colorFill.from
+            ? { backgroundColor: colorFill.from, opacity: 1 }
+            : { backgroundColor: baseColor, opacity: dimmedOpacity }
           : entryReveal !== undefined
             ? { backgroundColor: PANEL_BG, opacity: dimmedOpacity }
             : false
@@ -141,12 +148,14 @@ function LogoCell({
   onCaseStudySelect,
   transitionActive,
   playEntry,
+  hidden,
 }: {
   cell: LogoCellData;
   index: number;
   onCaseStudySelect?: (payload: CaseStudySelectPayload) => void;
   transitionActive: boolean;
   playEntry: boolean;
+  hidden: boolean;
 }) {
   return (
     <TetrisEntryButton
@@ -155,6 +164,7 @@ function LogoCell({
       onCaseStudySelect={onCaseStudySelect}
       transitionActive={transitionActive}
       playEntry={playEntry}
+      hidden={hidden}
       className="relative size-full overflow-hidden [container-type:size]"
     >
       <LogoMark cell={cell} />
@@ -169,6 +179,7 @@ function TetrisEntryButton({
   onCaseStudySelect,
   transitionActive,
   playEntry,
+  hidden,
   className,
   children,
 }: {
@@ -178,6 +189,8 @@ function TetrisEntryButton({
   transitionActive: boolean;
   /** False when remounting for a new layout mid-session, so logos don't slide in again. */
   playEntry: boolean;
+  /** Mount invisible and in place, e.g. under a case-study-to-case-study transition. */
+  hidden: boolean;
   className: string;
   children: React.ReactNode;
 }) {
@@ -206,7 +219,13 @@ function TetrisEntryButton({
         });
       }}
       whileHover={reducedMotion || transitionActive ? undefined : { scale: CASE_STUDY_HOVER_SCALE }}
-      initial={reducedMotion || !playEntry ? false : { x: start.x, y: start.y, opacity: 1 }}
+      initial={
+        hidden
+          ? { opacity: 0 }
+          : reducedMotion || !playEntry
+            ? false
+            : { x: start.x, y: start.y, opacity: 1 }
+      }
       animate={{
         x: "0px",
         y: "0px",
@@ -285,6 +304,7 @@ export function KellyColorGrid({
   const closingGaps = colorFill?.phase === "gaps";
   const gap = closingGaps ? 0 : GRID_GAP_PX;
   const gapPx = `${gap}px`;
+  const gapInitial = colorFill?.from ? { rowGap: "0px", columnGap: "0px" } : false;
   const gapTransition = {
     duration: reducedMotion ? 0 : CASE_STUDY_GAP_FILL_S,
     ease: CASE_STUDY_MOTION_EASE,
@@ -294,7 +314,7 @@ export function KellyColorGrid({
     <motion.section
       aria-label={showCaseStudies ? "Case studies" : "Color grid"}
       className="relative size-full overflow-hidden"
-      initial={false}
+      initial={colorFill?.from ? { backgroundColor: colorFill.from } : false}
       animate={{
         backgroundColor: closingGaps && colorFill ? colorFill.color : PANEL_BG,
       }}
@@ -307,7 +327,7 @@ export function KellyColorGrid({
     >
       <motion.div
         className="flex size-full flex-col"
-        initial={false}
+        initial={gapInitial}
         animate={{ rowGap: gapPx, columnGap: gapPx }}
         transition={gapTransition}
         onAnimationComplete={() => {
@@ -320,7 +340,7 @@ export function KellyColorGrid({
             key={`${layout.id}-${rowIndex}`}
             className="grid min-h-0 flex-1"
             style={{ gridTemplateColumns }}
-            initial={false}
+            initial={gapInitial}
             animate={{ columnGap: gapPx, rowGap: gapPx }}
             transition={gapTransition}
           >
@@ -346,7 +366,7 @@ export function KellyColorGrid({
       <motion.div
         key={layout.id}
         className="pointer-events-none absolute inset-0 flex flex-col"
-        initial={false}
+        initial={gapInitial}
         animate={{ rowGap: gapPx, columnGap: gapPx }}
         transition={gapTransition}
       >
@@ -355,7 +375,7 @@ export function KellyColorGrid({
             key={rowIndex}
             className="grid min-h-0 flex-1"
             style={{ gridTemplateColumns }}
-            initial={false}
+            initial={gapInitial}
             animate={{ columnGap: gapPx, rowGap: gapPx }}
             transition={gapTransition}
           >
@@ -377,6 +397,7 @@ export function KellyColorGrid({
                         onCaseStudySelect={onCaseStudySelect}
                         transitionActive={rippleActive}
                         playEntry={playLogoEntry}
+                        hidden={colorFill?.from !== undefined}
                       />
                     ) : null}
                   </AnimatePresence>

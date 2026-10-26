@@ -5,6 +5,7 @@ import { useReducedMotion } from "framer-motion";
 
 import type { NavId } from "@/components/bottom-nav";
 import { CaseStudyMediaGrid } from "@/components/case-study-media-grid";
+import { CaseStudyNav } from "@/components/case-study-nav";
 import { useGridLayout } from "@/components/grid-layout-context";
 import { PanelHeroMedia } from "@/components/panel-hero-media";
 import {
@@ -23,6 +24,7 @@ import {
   mediaBlockCount,
   panelContentRippleEndS,
 } from "@/lib/kelly-grid-motion";
+import { adjacentCaseStudySlug, getCaseStudy } from "@/lib/case-studies";
 import type { GridDims } from "@/lib/kelly-color-grid";
 import { getPanelContent } from "@/lib/panel-content";
 
@@ -40,6 +42,8 @@ type OpenState = {
   slug: string;
   cellIndex: number;
   color: string;
+  /** Color of the case study this one was stepped to from, if any. */
+  fromColor?: string;
   fillGeneration: number;
   stage: OpenStage;
 };
@@ -48,6 +52,8 @@ type CaseStudyPanelProps = {
   active: NavId | null;
   onNavSelect: (id: NavId | null) => void;
   onOpen: (slug: string, cellIndex: number) => void;
+  /** Leave the open case study for the Case Studies grid. */
+  onClose: () => void;
   /**
    * Start the open sequence on mount from this cell, without a tile click (tab pages, history
    * navigation). `instant` lands on the open page directly, e.g. when loading its URL.
@@ -79,6 +85,7 @@ export function CaseStudyPanel({
   active,
   onNavSelect,
   onOpen,
+  onClose,
   autoOpen,
   entryReveal,
 }: CaseStudyPanelProps) {
@@ -146,6 +153,33 @@ export function CaseStudyPanel({
     [onOpen, open, reducedMotion],
   );
 
+  /** Ripples straight from the open case study's color into the next one's, skipping the grid. */
+  const handleCaseStudyStep = useCallback(
+    (step: 1 | -1) => {
+      if (!open) return;
+      const slug = adjacentCaseStudySlug(open.slug, step);
+      const next = getCaseStudy(slug);
+      if (!next) return;
+      const cellIndex = Math.max(
+        layout.caseStudyCells.findIndex((cell) => cell.kind === "logo" && cell.slug === slug),
+        0,
+      );
+
+      fillGenerationRef.current += 1;
+      setOpen({
+        slug,
+        cellIndex,
+        color: next.panelColor,
+        fromColor: open.color,
+        fillGeneration: fillGenerationRef.current,
+        stage: reducedMotion ? "content" : "fill-cells",
+      });
+      setGridMounted(!reducedMotion);
+      onOpen(slug, cellIndex);
+    },
+    [layout, onOpen, open, reducedMotion],
+  );
+
   const colorFill: ColorFillState | undefined =
     open && open.stage !== "hold"
       ? {
@@ -153,8 +187,10 @@ export function CaseStudyPanel({
           originIndex: open.cellIndex,
           generation: open.fillGeneration,
           phase: open.stage === "fill-cells" ? "cells" : "gaps",
+          from: open.fromColor,
         }
       : undefined;
+  const openCaseStudy = open ? getCaseStudy(open.slug) : undefined;
 
   return (
     <section
@@ -206,6 +242,15 @@ export function CaseStudyPanel({
             blockCount={mediaBlockCount(study.mediaLayout)}
           />
         )
+      ) : null}
+
+      {openCaseStudy ? (
+        <CaseStudyNav
+          title={openCaseStudy.title}
+          onBack={onClose}
+          onNext={() => handleCaseStudyStep(1)}
+          onPrevious={() => handleCaseStudyStep(-1)}
+        />
       ) : null}
     </section>
   );

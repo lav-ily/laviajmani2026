@@ -169,7 +169,6 @@ export function HomeView() {
   const handleIntroClose = () => {
     navigate(activeTabPage ? HOME_ROUTE : routeForNav("case-studies"));
   };
-
   const handleMenuSelect = (id: NavId) => {
     if (id === "case-studies") {
       if (study) {
@@ -216,6 +215,7 @@ export function HomeView() {
             active={active}
             onNavSelect={handleNavSelect}
             onOpen={handleTileOpen}
+            onClose={handleIntroClose}
             autoOpen={
               panel.slug
                 ? { slug: panel.slug, cellIndex: panel.originIndex, instant: panel.instant }
