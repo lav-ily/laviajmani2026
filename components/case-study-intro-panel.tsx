@@ -8,7 +8,6 @@ import type { CaseStudy } from "@/lib/case-studies/types";
 
 type CaseStudyIntroPanelProps = {
   study: CaseStudy;
-  onClose: () => void;
 };
 
 function escapeRegExp(text: string): string {
@@ -36,7 +35,7 @@ function withLinks(paragraph: string, links: CaseStudy["bodyLinks"]): ReactNode 
 }
 
 /** Figma `78:96` / `78:97` — case study intro; 316px copy block. */
-export function CaseStudyIntroPanel({ study, onClose }: CaseStudyIntroPanelProps) {
+export function CaseStudyIntroPanel({ study }: CaseStudyIntroPanelProps) {
   const paragraphs = typeof study.body === "string" ? [study.body] : study.body;
 
   return (
@@ -62,14 +61,6 @@ export function CaseStudyIntroPanel({ study, onClose }: CaseStudyIntroPanelProps
               </p>
             ))}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Back to grid"
-            className="flex w-fit items-center justify-center bg-black p-[10px] text-[16px] leading-normal whitespace-nowrap text-white transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e1e1e]"
-          >
-            Back
-          </button>
         </TextEntry>
       </div>
     </aside>
