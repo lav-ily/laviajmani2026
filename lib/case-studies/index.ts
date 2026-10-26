@@ -16,3 +16,10 @@ export const CASE_STUDY_SLUGS: ReadonlyArray<string> = Object.keys(CASE_STUDIES)
 export function getCaseStudy(slug: string): CaseStudy | undefined {
   return CASE_STUDIES[slug];
 }
+
+/** The case study `step` places after `slug`, wrapping past either end of the list. */
+export function adjacentCaseStudySlug(slug: string, step: 1 | -1): string {
+  const count = CASE_STUDY_SLUGS.length;
+  const index = CASE_STUDY_SLUGS.indexOf(slug);
+  return CASE_STUDY_SLUGS[(index + step + count) % count];
+}
