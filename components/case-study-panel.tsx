@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
-import type { NavId } from "@/components/bottom-nav";
+import { NAV_LABELS, type NavId } from "@/components/bottom-nav";
 import { CaseStudyMediaGrid } from "@/components/case-study-media-grid";
 import { CaseStudyNav } from "@/components/case-study-nav";
 import { useGridLayout } from "@/components/grid-layout-context";
@@ -52,7 +52,7 @@ type CaseStudyPanelProps = {
   active: NavId | null;
   onNavSelect: (id: NavId | null) => void;
   onOpen: (slug: string, cellIndex: number) => void;
-  /** Leave the open case study for the Case Studies grid. */
+  /** Leave the open page: case studies return to their grid, Research and About to home. */
   onClose: () => void;
   /**
    * Start the open sequence on mount from this cell, without a tile click (tab pages, history
@@ -251,6 +251,8 @@ export function CaseStudyPanel({
           onNext={() => handleCaseStudyStep(1)}
           onPrevious={() => handleCaseStudyStep(-1)}
         />
+      ) : open && active && active !== "case-studies" ? (
+        <CaseStudyNav title={NAV_LABELS[active]} onBack={onClose} />
       ) : null}
     </section>
   );

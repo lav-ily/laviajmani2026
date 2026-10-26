@@ -192,11 +192,7 @@ export function HomeView() {
         />
         {study ? (
           <div className="flex flex-1 max-md:flex-none split:min-w-0">
-            <CaseStudyIntroPanel
-              key={`${openCaseStudy}-${panel.key}`}
-              study={study}
-              onClose={handleIntroClose}
-            />
+            <CaseStudyIntroPanel key={`${openCaseStudy}-${panel.key}`} study={study} />
           </div>
         ) : (
           <IntroPanel
