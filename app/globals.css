@@ -64,16 +64,21 @@ body {
 
 /* Figma `250:12549` — white on a black highlight. */
 .text-link {
-  background-color: #000000;
-  color: var(--color-white);
-  text-decoration: none;
-  transition: background-color 150ms ease;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
 .text-link:hover {
   background-color: var(--color-accent);
+  color: var(--color-white);
+  text-decoration: none;
 }
 
 .text-link:focus-visible {
