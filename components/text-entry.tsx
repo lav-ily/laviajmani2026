@@ -1,67 +1,107 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { createContext, useContext, type ReactNode } from "react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 /* ─────────────────────────────────────────────────────────
  * ANIMATION STORYBOARD — page copy entry
  *
  * Read top-to-bottom. Each `at` value is ms after mount.
  *
- *    0ms   copy hidden: opacity 0, blur 8px
- *  120ms   all copy fades in together, opacity 0 → 1 (450ms, ease-out)
- *  120ms   blur clears, 8px → 0 (650ms, ease-out, trails the fade)
- *  770ms   settled; filter removed so text renders crisp
+ *    0ms   every block hidden: opacity 0, 12px to the left
+ *  120ms   all blocks (title + paragraphs) slide right into place and fade in together
+ *          (350ms, ease-out)
+ *
+ * Quick switching between case studies (`from` below/above): the same on the Y axis, snappier
+ * so rapid steps keep up: no start delay, 250ms.
+ *
+ * Reduced motion: every block fades in together, no movement.
  * ───────────────────────────────────────────────────────── */
 
-const TIMING = {
-  entryStart: 120, // after first paint, so hydration doesn't eat the opening frames
+/** Where each block enters from: the left on a fresh open, below/above when stepping next/previous. */
+export type TextEntryFrom = "left" | "below" | "above";
+
+const EASE_OUT = [0.23, 1, 0.32, 1] as const; // strong ease-out
+
+const ENTRY: Record<
+  TextEntryFrom,
+  { start: number; duration: number; hiddenTransform: string; shownTransform: string }
+> = {
+  // `start` waits past first paint, so hydration doesn't eat the opening frames.
+  left: {
+    start: 0.12,
+    duration: 0.35,
+    hiddenTransform: "translateX(-12px)",
+    shownTransform: "translateX(0px)",
+  },
+  below: {
+    start: 0,
+    duration: 0.25,
+    hiddenTransform: "translateY(12px)",
+    shownTransform: "translateY(0px)",
+  },
+  above: {
+    start: 0,
+    duration: 0.25,
+    hiddenTransform: "translateY(-12px)",
+    shownTransform: "translateY(0px)",
+  },
 };
 
-const TEXT_ENTRY = {
-  initialBlurPx: 8, // blur before the copy resolves
-  fade: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
-  unblur: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as const },
+function itemVariants(from: TextEntryFrom): Variants {
+  const entry = ENTRY[from];
+  return {
+    hidden: { opacity: 0, transform: entry.hiddenTransform },
+    shown: {
+      opacity: 1,
+      transform: entry.shownTransform,
+      transition: { duration: entry.duration, ease: EASE_OUT },
+    },
+  };
+}
+
+const REDUCED_ITEM_VARIANTS: Variants = {
+  hidden: { opacity: 0 },
+  shown: { opacity: 1, transition: { duration: 0.2, ease: EASE_OUT } },
 };
+
+const EntryContext = createContext<Variants | null>(null);
 
 type TextEntryProps = {
-  /** When false, renders the copy as-is (e.g. returning to a page that already entered). */
-  animate?: boolean;
-  onComplete?: () => void;
+  from?: TextEntryFrom;
   className?: string;
   children: ReactNode;
 };
 
-/** Blur-and-fade entry for a block of page copy. */
-export function TextEntry({ animate = true, onComplete, className, children }: TextEntryProps) {
+/** Moves the `TextEntryItem` blocks inside it into place together, every time it mounts. */
+export function TextEntry({ from = "left", className, children }: TextEntryProps) {
   const reducedMotion = useReducedMotion();
-  const [done, setDone] = useState(false);
-
-  if (!animate || done) {
-    return <div className={className}>{children}</div>;
-  }
 
   // Stays a motion element under reduced motion too, so it matches the server-rendered start state.
-  const delay = TIMING.entryStart / 1000;
   return (
-    <motion.div
-      className={className}
-      style={{ willChange: "opacity, filter" }}
-      initial={{ opacity: 0, filter: `blur(${TEXT_ENTRY.initialBlurPx}px)` }}
-      animate={{ opacity: 1, filter: "blur(0px)" }}
-      transition={
-        reducedMotion
-          ? { duration: 0 }
-          : {
-              opacity: { ...TEXT_ENTRY.fade, delay },
-              filter: { ...TEXT_ENTRY.unblur, delay },
-            }
-      }
-      onAnimationComplete={() => {
-        setDone(true);
-        onComplete?.();
-      }}
-    >
+    <EntryContext.Provider value={reducedMotion ? REDUCED_ITEM_VARIANTS : itemVariants(from)}>
+      <motion.div
+        className={className}
+        initial="hidden"
+        animate="shown"
+        transition={reducedMotion ? undefined : { delayChildren: ENTRY[from].start }}
+      >
+        {children}
+      </motion.div>
+    </EntryContext.Provider>
+  );
+}
+
+type TextEntryItemProps = {
+  className?: string;
+  children: ReactNode;
+};
+
+/** One block of copy (a heading group or a paragraph) inside a `TextEntry`. */
+export function TextEntryItem({ className, children }: TextEntryItemProps) {
+  const variants = useContext(EntryContext);
+  return (
+    <motion.div className={className} variants={variants ?? undefined}>
       {children}
     </motion.div>
   );

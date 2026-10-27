@@ -51,7 +51,8 @@ type OpenState = {
 type CaseStudyPanelProps = {
   active: NavId | null;
   onNavSelect: (id: NavId | null) => void;
-  onOpen: (slug: string, cellIndex: number) => void;
+  /** `step` is set when the page was reached with the next (1) / previous (-1) chevrons. */
+  onOpen: (slug: string, cellIndex: number, step?: 1 | -1) => void;
   /** Leave the open page: case studies return to their grid, Research and About to home. */
   onClose: () => void;
   /**
@@ -175,7 +176,7 @@ export function CaseStudyPanel({
         stage: reducedMotion ? "content" : "fill-cells",
       });
       setGridMounted(!reducedMotion);
-      onOpen(slug, cellIndex);
+      onOpen(slug, cellIndex, step);
     },
     [layout, onOpen, open, reducedMotion],
   );

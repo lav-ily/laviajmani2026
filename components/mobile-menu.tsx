@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import type { NavId } from "@/components/bottom-nav";
-import { TextEntry } from "@/components/text-entry";
-
 const ITEMS: ReadonlyArray<{ id: NavId; label: string }> = [
   { id: "case-studies", label: "Case Studies" },
   { id: "research", label: "Research" },
@@ -84,7 +82,12 @@ export function MobileMenu({ current, onSelect }: MobileMenuProps) {
                 </svg>
               </button>
             </div>
-            <TextEntry className="flex flex-col items-start gap-3 px-6 pt-6 font-body text-[20px] leading-normal text-black">
+            <motion.div
+              className="flex flex-col items-start gap-3 px-6 pt-6 font-body text-[20px] leading-normal text-black"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reducedMotion ? 0 : 0.2, ease: [0.23, 1, 0.32, 1] }}
+            >
               {ITEMS.map((item) => (
                 <button
                   key={item.id}
@@ -101,7 +104,7 @@ export function MobileMenu({ current, onSelect }: MobileMenuProps) {
                   {item.label}
                 </button>
               ))}
-            </TextEntry>
+            </motion.div>
           </motion.div>
         ) : null}
       </AnimatePresence>
