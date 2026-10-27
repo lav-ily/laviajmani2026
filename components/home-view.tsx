@@ -8,6 +8,7 @@ import { CaseStudyPanel } from "@/components/case-study-panel";
 import { GridLayoutProvider } from "@/components/grid-layout-context";
 import { IntroPanel } from "@/components/intro-panel";
 import { MobileMenu } from "@/components/mobile-menu";
+import type { TextEntryFrom } from "@/components/text-entry";
 import {
   centralCellIndicesWithColor,
   DEFAULT_GRID_LAYOUT,
@@ -34,6 +35,8 @@ type PanelSession = {
   slug: string | null;
   originIndex: number;
   instant: boolean;
+  /** How the page's copy enters; set by tile opens and next/previous steps. */
+  entryFrom?: TextEntryFrom;
 };
 
 /** Cell a page ripples from when it opens without a tile click (tab, back/forward, page load). */
@@ -92,7 +95,6 @@ export function HomeView() {
   }, [routePath]);
   const [gridLayout, setGridLayout] = useState<GridLayout>(DEFAULT_GRID_LAYOUT);
   const [gridMeasured, setGridMeasured] = useState(false);
-  const [introEntered, setIntroEntered] = useState(false);
   const [gridRevealed, setGridRevealed] = useState(route !== HOME_ROUTE);
   const [panel, setPanel] = useState<PanelSession>(() => ({
     key: 0,
@@ -136,8 +138,6 @@ export function HomeView() {
   }, []);
 
   const study = openCaseStudy ? getPanelContent(openCaseStudy) : undefined;
-  if (study && !introEntered) setIntroEntered(true);
-
   const title = pageTitle(route);
   useEffect(() => {
     document.title = title;
@@ -161,8 +161,9 @@ export function HomeView() {
 
   const activeTabPage = active ? TAB_PAGES[active] : undefined;
 
-  const handleTileOpen = (slug: string, cellIndex: number) => {
-    setPanel((current) => ({ ...current, slug, originIndex: cellIndex }));
+  const handleTileOpen = (slug: string, cellIndex: number, step?: 1 | -1) => {
+    const entryFrom: TextEntryFrom = step === 1 ? "below" : step === -1 ? "above" : "left";
+    setPanel((current) => ({ ...current, slug, originIndex: cellIndex, entryFrom }));
     navigate(caseStudyRoute(slug));
   };
 
@@ -192,13 +193,14 @@ export function HomeView() {
         />
         {study ? (
           <div className="flex flex-1 max-md:flex-none split:min-w-0">
-            <CaseStudyIntroPanel key={`${openCaseStudy}-${panel.key}`} study={study} />
+            <CaseStudyIntroPanel
+              key={`${openCaseStudy}-${panel.key}`}
+              study={study}
+              entryFrom={panel.entryFrom}
+            />
           </div>
         ) : (
-          <IntroPanel
-            animateEntry={!introEntered}
-            onEntryComplete={() => setIntroEntered(true)}
-          />
+          <IntroPanel />
         )}
         <div
           ref={gridHostRef}
