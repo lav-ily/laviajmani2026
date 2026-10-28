@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { HomeView } from "@/components/home-view";
+import { getLatestTumblrPosts } from "@/lib/research/tumblr-posts";
 import { pageTitle, routeFromSegments, SITE_PATH_SEGMENTS } from "@/lib/site-routes";
 
 type PageProps = { params: Promise<{ path?: string[] }> };
@@ -21,5 +22,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   if (!routeFromSegments((await params).path ?? [])) notFound();
-  return <HomeView />;
+  // Every route needs these: Research opens in place from any page without a server round trip.
+  return <HomeView researchPosts={await getLatestTumblrPosts()} />;
 }

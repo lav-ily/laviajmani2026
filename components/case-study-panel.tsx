@@ -27,6 +27,8 @@ import {
 import { adjacentCaseStudySlug, getCaseStudy } from "@/lib/case-studies";
 import type { GridDims } from "@/lib/kelly-color-grid";
 import { getPanelContent } from "@/lib/panel-content";
+import { laVieResearch } from "@/lib/research/la-vie";
+import type { TumblrPost } from "@/lib/research/tumblr-posts";
 
 export type CaseStudySelectPayload = {
   slug: string;
@@ -55,6 +57,8 @@ type CaseStudyPanelProps = {
   onOpen: (slug: string, cellIndex: number, step?: 1 | -1) => void;
   /** Leave the open page: case studies return to their grid, Research and About to home. */
   onClose: () => void;
+  /** Latest La Vie Tumblr posts, shown in the Research page's bento. */
+  researchPosts: ReadonlyArray<TumblrPost>;
   /**
    * Start the open sequence on mount from this cell, without a tile click (tab pages, history
    * navigation). `instant` lands on the open page directly, e.g. when loading its URL.
@@ -87,6 +91,7 @@ export function CaseStudyPanel({
   onNavSelect,
   onOpen,
   onClose,
+  researchPosts,
   autoOpen,
   entryReveal,
 }: CaseStudyPanelProps) {
@@ -241,6 +246,7 @@ export function CaseStudyPanel({
             originIndex={open.cellIndex}
             fillGeneration={open.fillGeneration}
             blockCount={mediaBlockCount(study.mediaLayout)}
+            photos={open.slug === laVieResearch.slug ? researchPosts : undefined}
           />
         )
       ) : null}

@@ -18,6 +18,7 @@ import {
 } from "@/lib/kelly-color-grid";
 import { gridEntryRevealEndS } from "@/lib/kelly-grid-motion";
 import { getPanelContent } from "@/lib/panel-content";
+import type { TumblrPost } from "@/lib/research/tumblr-posts";
 import {
   caseStudyRoute,
   HOME_ROUTE,
@@ -58,7 +59,7 @@ function routeFromLocation(pathname: string): SiteRoute {
  * its own URL: clicks push history entries so the grid stays mounted for its transitions, and
  * back/forward replay them from the URL.
  */
-export function HomeView() {
+export function HomeView({ researchPosts }: { researchPosts: ReadonlyArray<TumblrPost> }) {
   const pathname = usePathname();
   // Held locally rather than read from `usePathname`, which lags a push by a render and would
   // look like a back/forward to the panel sync below, remounting the grid mid-transition.
@@ -214,6 +215,7 @@ export function HomeView() {
             onNavSelect={handleNavSelect}
             onOpen={handleTileOpen}
             onClose={handleIntroClose}
+            researchPosts={researchPosts}
             autoOpen={
               panel.slug
                 ? { slug: panel.slug, cellIndex: panel.originIndex, instant: panel.instant }
