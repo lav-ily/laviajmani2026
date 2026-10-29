@@ -4,6 +4,7 @@ import {
   FeedPhonesSample,
   PerpsPositionsSample,
   ProfileSample,
+  PrototypeVideoSample,
   TradeFlowSample,
 } from "@/components/case-study-samples/bullpen-image-cards";
 import {
@@ -84,7 +85,7 @@ export const CASE_STUDY_SAMPLES: Partial<
   bullpen: [
     PerpsPositionsSample,
     FeedPhonesSample,
-    undefined,
+    PrototypeVideoSample,
     undefined,
     TradeFlowSample,
     ProfileSample,
