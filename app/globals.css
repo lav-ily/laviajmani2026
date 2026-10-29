@@ -86,6 +86,45 @@ body {
   outline-offset: 2px;
 }
 
+/* Bento card caption (Figma `340:1364`): slides up from the card's bottom edge on hover. */
+.bento-caption {
+  /* Past the edge by the shadow's blur, so no shadow shows on the photo while hidden. */
+  translate: 0 calc(100% + 60px);
+  transition: translate 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.bento-card:hover .bento-caption,
+.bento-card:focus-within .bento-caption {
+  translate: 0 0;
+  transition-duration: 220ms;
+}
+
+/* Touch screens can't hover, so the caption stays up. */
+@media (hover: none) {
+  .bento-caption {
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-caption {
+    translate: 0 0;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .bento-card:hover .bento-caption,
+  .bento-card:focus-within .bento-caption {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (hover: none) {
+  .bento-caption {
+    opacity: 1;
+  }
+}
+
 .font-serif-display {
   font-family: var(--font-apple-garamond), Georgia, "Times New Roman", serif;
   font-weight: 300;

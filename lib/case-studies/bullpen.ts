@@ -8,4 +8,12 @@ export const bullpenCaseStudy: CaseStudy = {
   body: "Descriptions coming soon.",
   panelColor: "#004646",
   blockColor: "#005f5f",
+  captions: [
+    "Perps positions",
+    "Coin chart, trending feed, and trades feed",
+    undefined,
+    undefined,
+    "Placing a trade: leverage, take-profit and stop-loss targets, and confirming",
+    "Profile",
+  ],
 };

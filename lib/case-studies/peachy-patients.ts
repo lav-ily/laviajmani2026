@@ -8,4 +8,12 @@ export const peachyPatientsCaseStudy: CaseStudy = {
   body: "Descriptions coming soon.",
   panelColor: "#e8762b",
   blockColor: "#ff8d42",
+  captions: [
+    "Bill history, opened over the audit log",
+    "User journey for billing and the audit log, mapped in FigJam",
+    "Billing table with a hovered row",
+    "The audit log",
+    "Button states",
+    "Billing table with the row actions menu open",
+  ],
 };
