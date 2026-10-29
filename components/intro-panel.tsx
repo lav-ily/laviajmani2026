@@ -1,6 +1,7 @@
 "use client";
 
 import { TextEntry, TextEntryItem } from "@/components/text-entry";
+import { withLinks } from "@/components/text-link";
 import { ABOUT } from "@/lib/about-content";
 
 /** Figma `78:195` / `78:196` — intro column; same layout in every homepage state. Slides in on every mount. */
@@ -16,7 +17,7 @@ export function IntroPanel() {
           <div className="flex w-full flex-col gap-3 text-[16px] text-balance max-md:text-wrap">
             {ABOUT.paragraphs.map((paragraph) => (
               <TextEntryItem key={paragraph} className="w-full">
-                <p>{paragraph}</p>
+                <p>{withLinks(paragraph, ABOUT.links)}</p>
               </TextEntryItem>
             ))}
           </div>
