@@ -1,39 +1,13 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { TextEntry, TextEntryItem, type TextEntryFrom } from "@/components/text-entry";
-import { TextLink } from "@/components/text-link";
+import { withLinks } from "@/components/text-link";
 import type { CaseStudy } from "@/lib/case-studies/types";
 
 type CaseStudyIntroPanelProps = {
   study: CaseStudy;
   entryFrom?: TextEntryFrom;
 };
-
-function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function withLinks(paragraph: string, links: CaseStudy["bodyLinks"]): ReactNode {
-  const phrases = links ? Object.keys(links) : [];
-  if (phrases.length === 0) return paragraph;
-  const pattern = new RegExp(`\\b(${phrases.map(escapeRegExp).join("|")})\\b`);
-  return paragraph.split(pattern).map((part, index) => {
-    const href = index % 2 === 1 ? links?.[part] : undefined;
-    if (!href) return part;
-    const external = href.startsWith("http");
-    return (
-      <TextLink
-        key={index}
-        href={href}
-        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      >
-        {part}
-      </TextLink>
-    );
-  });
-}
 
 /** Figma `78:96` / `78:97` — case study intro; 316px copy block. */
 export function CaseStudyIntroPanel({ study, entryFrom }: CaseStudyIntroPanelProps) {
