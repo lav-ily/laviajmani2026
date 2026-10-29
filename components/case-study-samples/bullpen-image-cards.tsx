@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useReducedMotion } from "framer-motion";
 
 import { DECK_SHADOW } from "@/components/case-study-samples/sample-stage";
 
@@ -102,6 +105,29 @@ export function TradeFlowSample() {
         alt="Bullpen confirm trade"
         width={103}
         className="top-[64px] left-[389px] h-[223px] w-[103px]"
+      />
+    </>
+  );
+}
+
+/** Square prototype recording, centered and looping. */
+export function PrototypeVideoSample() {
+  const reducedMotion = useReducedMotion();
+  return (
+    <>
+      {/* The recording's backdrop color, extended past the design frame to fill the whole card. */}
+      <div aria-hidden className="absolute -inset-[400px] bg-[#f3f5f7]" />
+      <video
+        // The recording's bottom rows hold a dark encoding artifact.
+        className="absolute top-0 left-1/2 size-[351px] -translate-x-1/2 object-cover [clip-path:inset(0_0_1%_0)]"
+        src={`${MEDIA}/prototype.mp4`}
+        autoPlay={!reducedMotion}
+        loop
+        muted
+        playsInline
+        controls={Boolean(reducedMotion)}
+        preload="metadata"
+        aria-label="Bullpen prototype"
       />
     </>
   );
