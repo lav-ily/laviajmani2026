@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { CASE_STUDY_SAMPLES } from "@/components/case-study-samples";
-import { SampleStage } from "@/components/case-study-samples/sample-stage";
+import { DECK_SHADOW, SampleStage } from "@/components/case-study-samples/sample-stage";
 import { useGridLayout } from "@/components/grid-layout-context";
 import { MOBILE_CARDS_HEIGHT_PX } from "@/components/mobile-case-study-cards";
 import {
@@ -15,10 +15,15 @@ import {
   QUAD_BLOCK_COUNT,
   caseStudyBentoFillDelay,
 } from "@/lib/kelly-grid-motion";
-import type { TumblrPost } from "@/lib/research/tumblr-posts";
+import type { BentoPhoto } from "@/lib/case-studies/types";
 
 /** Mobile: the solid card block grows from the stack's height to fit the 1×6 column of samples. */
 const MOBILE_GROW_S = 0.6;
+
+const MEDIA_LABELS: Partial<Record<string, string>> = {
+  "la-vie": "Latest from La Vie",
+  about: "Photos",
+};
 
 type CaseStudyMediaGridProps = {
   slug: string;
@@ -28,11 +33,26 @@ type CaseStudyMediaGridProps = {
   fillGeneration: number;
   /** `BENTO_BLOCK_COUNT` (2×3) or `QUAD_BLOCK_COUNT` (2×2). */
   blockCount?: number;
-  /** Fill blocks with linked photos (Research) instead of the slug's case study samples. */
-  photos?: ReadonlyArray<TumblrPost>;
+  /** Fill blocks with photos (Research, About) instead of the slug's case study samples. */
+  photos?: ReadonlyArray<BentoPhoto>;
+  /** Hover captions for the sample cards, in block order. */
+  captions?: ReadonlyArray<string | undefined>;
 };
 
-function PhotoCard({ photo }: { photo: TumblrPost }) {
+function PhotoCard({ photo }: { photo: BentoPhoto }) {
+  const image = (
+    <Image
+      src={photo.src}
+      alt={photo.alt}
+      fill
+      sizes="(max-width: 839px) 100vw, 50vw"
+      className="object-cover"
+      style={photo.focus ? { objectPosition: photo.focus } : undefined}
+    />
+  );
+
+  if (!photo.href) return image;
+
   return (
     <a
       href={photo.href}
@@ -41,8 +61,21 @@ function PhotoCard({ photo }: { photo: TumblrPost }) {
       aria-label={`${photo.alt} (opens Tumblr)`}
       className="absolute inset-0 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
     >
-      <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 839px) 100vw, 50vw" className="object-cover" />
+      {image}
     </a>
+  );
+}
+
+/** Figma `340:1364` — slides up along the card's bottom edge while the card is hovered. */
+function BentoCaption({ children }: { children: string }) {
+  return (
+    <figcaption
+      className={`bento-caption absolute inset-x-0 bottom-0 flex min-h-12 items-center justify-center bg-white px-4 py-2 ${DECK_SHADOW}`}
+    >
+      <span className="max-w-[339px] text-center text-pretty font-[family-name:var(--font-geist-mono)] text-[12px] font-normal leading-normal text-black">
+        {children}
+      </span>
+    </figcaption>
   );
 }
 
@@ -54,6 +87,7 @@ function BentoBlock({
   blockColor,
   Sample,
   photo,
+  caption,
 }: {
   blockIndex: number;
   blockCount: number;
@@ -61,19 +95,22 @@ function BentoBlock({
   fillGeneration: number;
   blockColor: string;
   Sample?: ComponentType;
-  photo?: TumblrPost;
+  photo?: BentoPhoto;
+  caption?: string;
 }) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
   const delay = reducedMotion
     ? 0
     : caseStudyBentoFillDelay(layout, originIndex, blockIndex, blockCount);
+  const content = photo ?? Sample;
+  const captionText = content ? (photo ? photo.caption : caption) : undefined;
 
   return (
-    <motion.div
+    <motion.figure
       key={`${fillGeneration}-${blockIndex}`}
-      aria-hidden={!Sample && !photo}
-      className="relative min-h-0 min-w-0"
+      aria-hidden={!content}
+      className="bento-card relative m-0 min-h-0 min-w-0 overflow-hidden"
       style={{ backgroundColor: blockColor }}
       initial={reducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -90,7 +127,8 @@ function BentoBlock({
           <Sample />
         </SampleStage>
       ) : null}
-    </motion.div>
+      {captionText ? <BentoCaption>{captionText}</BentoCaption> : null}
+    </motion.figure>
   );
 }
 
@@ -103,6 +141,7 @@ export function CaseStudyMediaGrid({
   fillGeneration,
   blockCount = BENTO_BLOCK_COUNT,
   photos,
+  captions,
 }: CaseStudyMediaGridProps) {
   const reducedMotion = useReducedMotion();
   const layout = useGridLayout();
@@ -117,13 +156,14 @@ export function CaseStudyMediaGrid({
       blockColor={blockColor}
       Sample={samples?.[index]}
       photo={photos?.[index]}
+      caption={captions?.[index]}
     />
   ));
 
   if (layout.id === "cards") {
     return (
       <motion.section
-        aria-label={photos ? "Latest from La Vie" : "Case study media"}
+        aria-label={MEDIA_LABELS[slug] ?? "Case study media"}
         className="relative z-30 overflow-hidden"
         style={{ backgroundColor: panelColor }}
         initial={reducedMotion ? false : { height: MOBILE_CARDS_HEIGHT_PX }}
@@ -137,7 +177,7 @@ export function CaseStudyMediaGrid({
 
   return (
     <section
-      aria-label={photos ? "Latest from La Vie" : "Case study media"}
+      aria-label={MEDIA_LABELS[slug] ?? "Case study media"}
       className="absolute inset-0 z-30 overflow-hidden"
       style={{ backgroundColor: panelColor }}
     >

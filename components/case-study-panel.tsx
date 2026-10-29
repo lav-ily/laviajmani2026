@@ -246,7 +246,8 @@ export function CaseStudyPanel({
             originIndex={open.cellIndex}
             fillGeneration={open.fillGeneration}
             blockCount={mediaBlockCount(study.mediaLayout)}
-            photos={open.slug === laVieResearch.slug ? researchPosts : undefined}
+            photos={open.slug === laVieResearch.slug ? researchPosts : study.photos}
+            captions={study.captions}
           />
         )
       ) : null}

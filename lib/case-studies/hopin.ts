@@ -8,4 +8,12 @@ export const hopinCaseStudy: CaseStudy = {
   body: "Descriptions coming soon.",
   panelColor: "#0047ab",
   blockColor: "#3274cf",
+  captions: [
+    "Session on iOS, from a video call to an invitation to join the stage",
+    "Meeting history, with a tooltip for requesting access",
+    "Primary and secondary button states across sizes",
+    "The mobile flow: browsing rooms, joining, the lobby, and in the room",
+    "User flow diagram",
+    "Meeting history for Session on desktop",
+  ],
 };

@@ -1,5 +1,17 @@
 export type PanelMediaLayout = "bento" | "hero" | "quad";
 
+/** A full-bleed photo filling one bento block. */
+export type BentoPhoto = {
+  src: string;
+  alt: string;
+  /** Opens in a new tab when the card is clicked. */
+  href?: string;
+  /** Shown in a bar along the card's bottom edge on hover (Figma `340:1364`). */
+  caption?: string;
+  /** CSS `object-position`, to keep the subject in frame once cropped. */
+  focus?: string;
+};
+
 export type CaseStudy = {
   slug: string;
   title: string;
@@ -16,4 +28,8 @@ export type CaseStudy = {
   mediaLayout?: PanelMediaLayout;
   /** Optional asset inside the hero frame (`mediaLayout: "hero"`). */
   heroMediaSrc?: string;
+  /** Photos filling the bento blocks in reading order, in place of case study samples. */
+  photos?: ReadonlyArray<BentoPhoto>;
+  /** Hover captions for the bento sample cards, in the same order as the samples. */
+  captions?: ReadonlyArray<string | undefined>;
 };
