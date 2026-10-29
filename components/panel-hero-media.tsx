@@ -64,6 +64,8 @@ export function PanelHeroMedia({
             muted
             playsInline
             controls={Boolean(reducedMotion)}
+            controlsList="nodownload noremoteplayback"
+            disablePictureInPicture
             preload="metadata"
             aria-label={title}
           />

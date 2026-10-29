@@ -126,6 +126,8 @@ export function PrototypeVideoSample() {
         muted
         playsInline
         controls={Boolean(reducedMotion)}
+        controlsList="nodownload noremoteplayback"
+        disablePictureInPicture
         preload="metadata"
         aria-label="Bullpen prototype"
       />

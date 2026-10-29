@@ -53,6 +53,7 @@ export function WorkVideo({ src }: { src: string }) {
         muted
         loop
         playsInline
+        disablePictureInPicture
         preload="metadata"
         className="size-full rounded-[6px] object-cover"
       />
