@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 
+import { ContentProtection } from "@/components/content-protection";
 import { HERO, SITE_TAGLINE } from "@/lib/hero-content";
 import { getRecaptchaSiteKey } from "@/lib/recaptcha";
 import "./globals.css";
@@ -100,6 +101,7 @@ export default function RootLayout({
       className={`${matter.variable} ${geist.variable} ${geistMono.variable} ${appleGaramond.variable} ${oggItalic.variable} ${inter.variable} antialiased`}
     >
       <body>
+        <ContentProtection />
         {children}
         {gaId ? (
           <>

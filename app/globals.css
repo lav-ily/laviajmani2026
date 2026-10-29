@@ -53,6 +53,15 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Deters copying: no text selection, and no iOS long-press save/share sheet. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+img,
+video {
+  -webkit-user-drag: none;
 }
 
 .grecaptcha-badge {
