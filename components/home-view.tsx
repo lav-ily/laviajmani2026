@@ -187,7 +187,11 @@ export function HomeView({ researchPosts }: { researchPosts: ReadonlyArray<Tumbl
 
   return (
     <GridLayoutProvider value={gridLayout}>
-      <main className="flex min-h-svh flex-col bg-white split:flex-row split:items-start">
+      <main
+        className={`flex min-h-svh flex-col bg-white split:flex-row split:items-start ${
+          study ? "max-md:pb-[calc(3.75rem+env(safe-area-inset-bottom))]" : ""
+        }`}
+      >
         <MobileMenu
           current={activeTabPage && active ? active : "case-studies"}
           onSelect={handleMenuSelect}

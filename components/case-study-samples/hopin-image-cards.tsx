@@ -65,6 +65,7 @@ export function ButtonStatesSample() {
             alt="Primary and secondary button states across sizes"
             fill
             sizes="697px"
+            loading="eager"
           />
         </div>
       </div>
