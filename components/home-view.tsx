@@ -193,7 +193,7 @@ export function HomeView({ researchPosts }: { researchPosts: ReadonlyArray<Tumbl
           onSelect={handleMenuSelect}
         />
         {study ? (
-          <div className="flex flex-1 max-md:flex-none split:min-w-0">
+          <div className="flex flex-1 max-md:flex-none split:sticky split:top-0 split:h-svh split:min-w-0">
             <CaseStudyIntroPanel
               key={`${openCaseStudy}-${panel.key}`}
               study={study}

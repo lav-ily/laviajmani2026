@@ -14,8 +14,8 @@ export function CaseStudyIntroPanel({ study, entryFrom }: CaseStudyIntroPanelPro
   const paragraphs = typeof study.body === "string" ? [study.body] : study.body;
 
   return (
-    <aside className="flex-1 bg-white max-md:w-full max-md:flex-none split:min-w-0 split:min-h-svh">
-      <div className="px-6 pt-16 pb-12 max-md:py-6 split:pt-[121px] split:pb-0 split:pl-[var(--intro-pad-left)]">
+    <aside className="flex-1 bg-white max-md:w-full max-md:flex-none split:h-full split:min-w-0 split:overflow-x-hidden split:overflow-y-auto split:overscroll-contain">
+      <div className="px-6 pt-16 pb-12 max-md:py-6 split:pt-[121px] split:pb-[60.5px] split:pl-[var(--intro-pad-left)]">
         <TextEntry
           from={entryFrom}
           className={`flex w-full flex-col gap-[18px] font-body leading-normal text-black max-md:gap-3 ${
