@@ -1,7 +1,7 @@
 "use client";
 
 import { animate, motion, useMotionValue, type MotionValue } from "framer-motion";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { InstaxPhoto } from "./instax-photo";
 
@@ -30,10 +30,12 @@ type StackPhoto = {
 export function MobileInstaxStack({ photos }: { photos: [StackPhoto, StackPhoto] }) {
   const [frontId, setFrontId] = useState<0 | 1>(0);
   const [phase, setPhase] = useState<"idle" | "tucking" | "travel">("idle");
-  const positions = [useMotionValue(LEFT_HOME), useMotionValue(RIGHT_HOME)] as [
-    MotionValue<number>,
-    MotionValue<number>,
-  ];
+  const leftPosition = useMotionValue(LEFT_HOME);
+  const rightPosition = useMotionValue(RIGHT_HOME);
+  const positions = useMemo(
+    () => [leftPosition, rightPosition] as [MotionValue<number>, MotionValue<number>],
+    [leftPosition, rightPosition],
+  );
   const dragged = useRef(false);
   const shufflingRef = useRef(false);
 

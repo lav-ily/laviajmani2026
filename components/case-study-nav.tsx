@@ -52,7 +52,11 @@ export function CaseStudyNav({ title, onBack, onNext, onPrevious }: CaseStudyNav
   };
 
   return (
-    <NavIsland label="Page" className="w-max gap-4" dockClassName="z-40">
+    <NavIsland
+      label="Page"
+      className="w-max gap-4"
+      dockClassName="z-40 max-md:fixed max-md:bottom-[calc(0.75rem+env(safe-area-inset-bottom))]"
+    >
       <button type="button" aria-label="Back to grid" className={ICON_BUTTON} onClick={onBack}>
         <NavIcon src="/icons/arrow-left.svg" />
       </button>
