@@ -82,19 +82,19 @@ export function CaseStudyNav({ title, onBack, onNext, onPrevious }: CaseStudyNav
         <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
-            aria-label="Next case study"
-            className={ICON_BUTTON}
-            onClick={() => step(1, onNext)}
-          >
-            <NavIcon src="/icons/chevron-down-large.svg" />
-          </button>
-          <button
-            type="button"
             aria-label="Previous case study"
             className={ICON_BUTTON}
             onClick={() => step(-1, onPrevious)}
           >
             <NavIcon src="/icons/chevron-up-large.svg" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next case study"
+            className={ICON_BUTTON}
+            onClick={() => step(1, onNext)}
+          >
+            <NavIcon src="/icons/chevron-down-large.svg" />
           </button>
         </div>
       ) : (
