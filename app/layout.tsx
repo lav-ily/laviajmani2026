@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
@@ -9,29 +10,14 @@ import { HERO, SITE_TAGLINE } from "@/lib/hero-content";
 import { getRecaptchaSiteKey } from "@/lib/recaptcha";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  display: "swap",
-  preload: true,
-  adjustFontFallback: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-});
-
-/** Product UI in case study samples (Hopin desktop). */
-const inter = Inter({
+/** Product UI in case study samples (Hopin desktop). Latin subset only. */
+const inter = localFont({
+  src: "../public/fonts/inter/Inter-Variable-Latin.woff2",
+  weight: "400 600",
   variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
   display: "swap",
   preload: false,
+  adjustFontFallback: "Arial",
 });
 
 const appleGaramond = localFont({
@@ -99,7 +85,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${matter.variable} ${geist.variable} ${geistMono.variable} ${appleGaramond.variable} ${oggItalic.variable} ${inter.variable} antialiased`}
+      className={`${matter.variable} ${GeistSans.variable} ${GeistMono.variable} ${appleGaramond.variable} ${oggItalic.variable} ${inter.variable} antialiased`}
     >
       <body>
         <ContentProtection />
