@@ -78,6 +78,7 @@ const matter = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://lavi.you"),
   title: HERO.name,
   description: SITE_TAGLINE,
   openGraph: {
